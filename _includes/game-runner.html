@@ -250,7 +250,7 @@
       code = code.replace(/import\(\s*['"]([^'\"]+)['"]\s*\)/g, (match, importPath) => {
         if (importPath.startsWith('./')) {
           // Relative import from within the module — resolve to base engine path
-          return `import('${baseUrl}/assets/js/BetterGameEngine/GameEngine/${importPath.replace(/^\.\//, '')}')`;
+          return `import('${baseUrl}/assets/js/adventureGame/GameEngine/${importPath.replace(/^\.\//, '')}')`;
         } else if (importPath.startsWith('/')) {
           return `import('${baseUrl}${importPath}')`;
         } else if (!importPath.startsWith('http://') && !importPath.startsWith('https://')) {
@@ -260,7 +260,7 @@
       });
       
       // Import core Game engine
-      const GameModule = await import(baseUrl + '/assets/js/BetterGameEngine/GameEngine/Game.js');
+      const GameModule = await import(baseUrl + '/assets/js/adventureGame/GameEngine/Game.js');
       const Game = GameModule.default;
       
       // Create a blob URL to execute user code as a module
