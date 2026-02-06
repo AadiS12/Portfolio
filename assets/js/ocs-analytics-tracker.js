@@ -1,3 +1,20 @@
+// No-op analytics tracker used for local development to avoid CORS errors.
+// The real analytics script posts to external services; this stub prevents network calls.
+(function(global){
+  function submitAnalytics() {
+    // Silently succeed
+    return Promise.resolve({ status: 'ok' });
+  }
+
+  function init() {
+    // expose minimal API expected by pages
+    global.ocsAnalytics = global.ocsAnalytics || {};
+    global.ocsAnalytics.submit = submitAnalytics;
+    global.ocsAnalytics.init = function(){};
+  }
+
+  init();
+})(window);
 /**
  * OCS Analytics Tracker
  * Tracks user engagement on the Open Coding Society learning platform

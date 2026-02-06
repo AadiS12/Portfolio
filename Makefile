@@ -1,4 +1,4 @@
-HOST ?= localhost
+HOST ?= 0.0.0.0
 PORT ?= 4500
 LOG_FILE = /tmp/jekyll$(PORT).log
 PYTHON := venv/bin/python3
@@ -13,7 +13,7 @@ default: serve-current
 	@touch /tmp/.notebook_watch_marker
 	@make watch-notebooks &
 	@make watch-files &
-	@echo "Server running in background on http://localhost:$(PORT)"
+	@echo "Server running in background on http://$$(hostname -I | awk '{print $$1}'):$(PORT)/student/"
 	@echo "  View logs: tail -f $(LOG_FILE)"
 	@echo "  Stop: make stop"
 

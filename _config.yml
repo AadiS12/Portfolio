@@ -47,6 +47,18 @@ future: true
 #   silence_deprecations: [import]
 incremental: true
 
+# Exclude unnecessary directories from watching
+exclude:
+  - venv
+  - .venv
+  - node_modules
+  - .git
+  - .gitignore
+  - .bundle
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+
 remote_theme: jekyll/minima
 plugins:
   - jekyll-remote-theme

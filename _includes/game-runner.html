@@ -233,14 +233,28 @@
       const path = '{{ site.baseurl }}';
       const baseUrl = window.location.origin + path;
       
-      // Replace relative import paths with absolute URLs
+      // Replace relative import paths with absolute URLs for static imports
       // Match import statements and convert paths starting with / or relative paths to absolute URLs
-      code = code.replace(/from\s+['"](\/?[^'"]+)['"]/g, (match, importPath) => {
-        // If path starts with / or is relative, make it absolute
+      code = code.replace(/from\s+['"](\/?[^'\"]+)['"]/g, (match, importPath) => {
         if (importPath.startsWith('/')) {
           return `from '${baseUrl}${importPath}'`;
         } else if (!importPath.startsWith('http://') && !importPath.startsWith('https://')) {
           return `from '${baseUrl}/${importPath}'`;
+        }
+        return match; // Already absolute
+      });
+
+      // Also rewrite dynamic import(...) calls so they resolve when the module is loaded from a blob
+      // e.g. import('./mymodule.js') -> import('http://host/student/path/to/mymodule.js')
+      // Handle relative paths by prepending the base engine path
+      code = code.replace(/import\(\s*['"]([^'\"]+)['"]\s*\)/g, (match, importPath) => {
+        if (importPath.startsWith('./')) {
+          // Relative import from within the module — resolve to base engine path
+          return `import('${baseUrl}/assets/js/BetterGameEngine/GameEngine/${importPath.replace(/^\.\//, '')}')`;
+        } else if (importPath.startsWith('/')) {
+          return `import('${baseUrl}${importPath}')`;
+        } else if (!importPath.startsWith('http://') && !importPath.startsWith('https://')) {
+          return `import('${baseUrl}/${importPath}')`;
         }
         return match; // Already absolute
       });
@@ -271,15 +285,84 @@
         gameCanvas.width = containerWidth;
         gameCanvas.height = containerHeight;
 
-        // Create environment object with explicit dimensions and references
-        const environment = {
-          path: path,
-          gameContainer: gameContainer,
-          gameCanvas: gameCanvas,
-          gameLevelClasses: gameLevelClasses,
-          innerWidth: containerWidth,   // Override window.innerWidth
-          innerHeight: containerHeight  // Override window.innerHeight
-        };
+          // Try to import API config (pythonURI, javaURI, fetchOptions) so Game can call backend
+            let pythonURI = undefined;
+            let javaURI = undefined;
+            let fetchOptions = undefined;
+            try {
+              const cfg = await import(baseUrl + '/assets/js/api/config.js');
+              pythonURI = cfg.pythonURI;
+              javaURI = cfg.javaURI;
+              fetchOptions = cfg.fetchOptions;
+            } catch (e) {
+              console.warn('Could not import api config, falling back to defaults', e);
+              // Fallbacks: point to same origin so requests fail gracefully in dev
+              pythonURI = baseUrl;
+              javaURI = baseUrl;
+              fetchOptions = { mode: 'cors', credentials: 'include' };
+            }
+
+            // Enable dev-mode mocks only when running locally or when ?dev=true is present
+            (function(){
+              const isDevQuery = window.location.search.includes('dev=true');
+              const host = window.location.hostname || '';
+              const isLocalhost = host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0' || host.startsWith('172.');
+              const isDev = isDevQuery || isLocalhost;
+              if (!isDev) return;
+
+              // Optionally load the local no-op analytics script so pages that include it won't fail
+              try {
+                const analyticsPath = baseUrl + '/assets/js/ocs-analytics-tracker.js';
+                if (!document.querySelector(`script[src="${analyticsPath}"]`)) {
+                  const s = document.createElement('script');
+                  s.src = analyticsPath;
+                  s.defer = true;
+                  document.head.appendChild(s);
+                }
+              } catch (e) {
+                console.warn('Could not inject local analytics stub', e);
+              }
+
+              if (window.__GAME_FETCH_INTERCEPTOR_INSTALLED__) return;
+              window.__GAME_FETCH_INTERCEPTOR_INSTALLED__ = true;
+              const nativeFetch = window.fetch.bind(window);
+              window.fetch = function(input, init){
+                try {
+                  const url = (typeof input === 'string') ? input : input.url;
+                  // Mock python /api/id endpoint
+                  if (pythonURI && url && url.startsWith(pythonURI) && url.endsWith('/api/id')) {
+                    const mock = new Response(JSON.stringify({ uid: 'dev-uid' }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+                    return Promise.resolve(mock);
+                  }
+                  // Mock java person lookup
+                  if (javaURI && url && url.startsWith(javaURI) && /\/rpg_answer\/person\//.test(url)) {
+                    const mock = new Response(JSON.stringify({ id: 12345 }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+                    return Promise.resolve(mock);
+                  }
+                  // Mock analytics endpoint for spring.opencodingsociety.com
+                  if (url && url.includes('/api/ocs-analytics/save')) {
+                    const mock = new Response(JSON.stringify({ status: 'ok' }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+                    return Promise.resolve(mock);
+                  }
+                } catch (e) {
+                  // fall through to native fetch if anything goes wrong
+                }
+                return nativeFetch(input, init);
+              };
+            })();
+
+          // Create environment object with explicit dimensions and references
+          const environment = {
+            path: path,
+            gameContainer: gameContainer,
+            gameCanvas: gameCanvas,
+            gameLevelClasses: gameLevelClasses,
+            innerWidth: containerWidth,   // Override window.innerWidth
+            innerHeight: containerHeight, // Override window.innerHeight
+            pythonURI: pythonURI,
+            javaURI: javaURI,
+            fetchOptions: fetchOptions
+          };
 
         // Populate level selector
         if (levelSelect.options.length <= 1) {
