@@ -229,9 +229,12 @@
       const gameContainer = document.getElementById('game-container-{{ include.runner_id }}');
       const gameCanvas = document.getElementById('game-canvas-{{ include.runner_id }}');
       
-      // Setup game environment
-      const path = '{{ site.baseurl }}';
-      const baseUrl = window.location.origin + path;
+      // Setup game environment: compute baseUrl at runtime from current pathname
+      const pathFromLocation = (function() {
+        const segs = window.location.pathname.split('/');
+        return (segs.length > 1 && segs[1]) ? ('/' + segs[1]) : '';
+      })();
+      const baseUrl = window.location.origin + pathFromLocation;
       
       // Replace relative import paths with absolute URLs for static imports
       // Match import statements and convert paths starting with / or relative paths to absolute URLs

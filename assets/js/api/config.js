@@ -1,7 +1,11 @@
 ---
 ---
 
-export const baseurl = "{{ site.baseurl }}";
+// Derive baseurl at runtime from the current pathname to support GitHub Pages
+export const baseurl = (function() {
+    const segs = window.location.pathname.split('/');
+    return (segs.length > 1 && segs[1]) ? ('/' + segs[1]) : '';
+})();
 
 export var pythonURI;
 if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
