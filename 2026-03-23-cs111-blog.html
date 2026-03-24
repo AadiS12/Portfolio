@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CS111 Blog - Aadi Saini</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/darcula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
  
@@ -272,6 +278,101 @@
     color: #8b949e;
     line-height: 1.9;
   }
+
+  /* Code Runner Styles */
+  .code-runner-container {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    margin: 24px 0;
+    overflow: hidden;
+  }
+
+  .challenge-box {
+    background: #0d1f38;
+    border-bottom: 1px solid #30363d;
+    padding: 14px 18px;
+  }
+
+  .challenge-box h3 {
+    color: #f0f6fc;
+    margin-bottom: 6px;
+    font-size: 16px;
+  }
+
+  .challenge-box p {
+    color: #c9d1d9;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .editor-container, .output-container {
+    background: #161b22;
+  }
+
+  .control-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #0d1117;
+    border-bottom: 1px solid #30363d;
+  }
+
+  .control-panel button {
+    background: #1f6feb;
+    color: #fff;
+    border: 1px solid #388bfd;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .control-panel button:hover {
+    background: #388bfd;
+  }
+
+  .control-panel select {
+    background: #161b22;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .editor-textarea {
+    width: 100%;
+    min-height: 220px;
+    border: none;
+    background: #161b22;
+    color: #e6edf3;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .output-content {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    margin: 12px;
+    padding: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #e6edf3;
+    min-height: 76px;
+    max-height: 280px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .lineCount, .charCount, .execTime {
+    color: #8b949e;
+    font-size: 12px;
+  }
 </style>
 </head>
 <body>
@@ -395,7 +496,50 @@
   <div class="annotation">
     <strong>super(data, gameEnv)</strong> is what makes the boss actually appear on screen. Calling it runs the <code>Enemy</code> constructor, which sets up the canvas element and loads the boss sprite image from the <code>src</code> path. Without that <code>super()</code> call, the boss would have no image, no canvas to draw on, and no position in the game world — it simply wouldn't exist visually. Everything my custom code adds (health, speed, defeat state) layers on top of what <code>super()</code> builds.
   </div>
- 
+
+  <!-- Code Runner: OOP class exercise -->
+  <div class="code-runner-container" id="runner-oop" data-storage-key="cs111-blog-runner-oop">
+    <div class="challenge-box">
+      <h3>Code Runner Challenge</h3>
+      <p>Create a class with constructor and method, then run it. This is a small practice for OOP and constructor chaining in your game classes.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option><option value="20">20px</option></select>
+      </div>
+      <textarea class="editor-textarea">class SimpleBoss {
+  constructor(name, hp = 8) {
+    this.name = name;
+    this.hp = hp;
+    this.isDefeated = false;
+  }
+
+  takeDamage(dmg) {
+    this.hp -= dmg;
+    if (this.hp <= 0) {
+      this.isDefeated = true;
+      return `${this.name} is defeated!`;
+    }
+    return `${this.name} has ${this.hp} HP remaining.`;
+  }
+}
+
+const b = new SimpleBoss('TestBoss', 10);
+console.log(b.takeDamage(4));
+console.log(b.takeDamage(7));</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
+  </div>
+
   <h3>Method Overriding</h3>
   <p>
     The engine calls <code>update()</code> on every game object 60 times per second. By overriding it in <code>PeppaBossEnemy</code>, I control exactly what the boss does each frame — whether it chases the player, whether it draws its hitbox, and whether it stops doing anything after being defeated. Without this override, the boss would use the default <code>Enemy</code> behavior, which doesn't know about health or defeat state. I also override <code>handleCollisionEvent()</code> to intentionally do nothing — collision damage is handled by the level, not the boss itself.
@@ -758,7 +902,51 @@ document.<span class="fn">addEventListener</span>(<span class="str">'keydown'</s
  
 <span class="cm">// Listener is cleaned up in destroy() to prevent memory leaks</span>
 document.<span class="fn">removeEventListener</span>(<span class="str">'keydown'</span>, <span class="kw">this</span>.boundKeyDown);</code></pre>
- 
+
+  <!-- Code Runner: Conditions + Events challenge -->
+  <div class="code-runner-container" id="runner-events" data-storage-key="cs111-blog-runner-events">
+    <div class="challenge-box">
+      <h3>Code Runner Challenge</h3>
+      <p>Simulate a key event system and nested condition logic like your play attack cooldown.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option><option value="20">20px</option></select>
+      </div>
+      <textarea class="editor-textarea">let attackRequested = true;
+let lastAttackAt = 0;
+let attackCooldown = 500;
+let bossAlive = true;
+
+function tryAttack(now) {
+  if (attackRequested) {
+    attackRequested = false;
+    if (now - lastAttackAt >= attackCooldown && bossAlive) {
+      lastAttackAt = now;
+      console.log('Attack executed at', now);
+    } else {
+      console.log('Attack blocked: cooldown or boss dead');
+    }
+  } else {
+    console.log('No attack request');
+  }
+}
+
+tryAttack(0);
+tryAttack(100);
+tryAttack(600);
+bossAlive = false;
+tryAttack(1200);</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click "Run" in code control panel to see output ...</div></div>
+  </div>
+
   <h3>Canvas Rendering — draw() via GameEngine</h3>
   <p>
     All characters are drawn to the HTML5 Canvas each frame. The <code>draw()</code> method is inherited from <code>GameObject</code> and called inside the overridden <code>update()</code>. The hitbox overlay uses the Canvas 2D context directly.
@@ -976,7 +1164,53 @@ console.<span class="fn">error</span>(<span class="str">`[Leaderboard] POST fail
   <div class="annotation">
     All API calls are wrapped in try/catch so a network failure or backend error never crashes the game. The game continues normally and logs the error to console for debugging. This was verified by testing with the backend server offline.
   </div>
- 
+
+  <!-- Code Runner: API + fetch practice -->
+  <div class="code-runner-container" id="runner-api" data-storage-key="cs111-blog-runner-api">
+    <div class="challenge-box">
+      <h3>Code Runner Challenge</h3>
+      <p>Experiment with async/await and mock fetch JSON handling. This mimics posting and reading leaderboard data.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option><option value="20">20px</option></select>
+      </div>
+      <textarea class="editor-textarea">async function postScore(player, score) {
+  try {
+    const payload = JSON.stringify({ player, score });
+    console.log('POST payload', payload);
+    return { ok: true, data: { player, score, date: '2026-03-24' } };
+  } catch (e) {
+    console.error('postScore error', e.message);
+    return null;
+  }
+}
+
+async function getLeaderboard() {
+  try {
+    const data = [
+      { player: 'Aadi', score: 300 },
+      { player: 'Ishan', score: 280 }
+    ];
+    data.forEach(({ player, score }) => console.log(`${player}: ${score}`));
+    return data;
+  } catch (e) {
+    console.error('getLeaderboard error', e.message);
+    return [];
+  }
+}
+
+await postScore('Player1', 999);
+await getLeaderboard();</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click "Run" in code control panel to see output ...</div></div>
+  </div>
 
   <hr>
 
@@ -1179,13 +1413,152 @@ console.<span class="fn">error</span>(<span class="str">`[Leaderboard] POST fail
     <strong>Overall connection to the rubric:</strong> these additional games strengthen my evidence for OOP, classes, methods, arrays, booleans, conditionals, iteration, DOM/canvas input-output, event listeners, and reusable game architecture across multiple projects.
   </div>
 
+  <hr>
 
+  <!-- HOMEWORK LINKS SECTION -->
+  <h2 id="homework-links">📚 All Homework Links</h2>
+  <p>
+    Below are links to all my CS111 homework assignments, each demonstrating key concepts covered in this blog. I've included brief explanations of how each homework relates to the main topics discussed and what understanding it shows.
+  </p>
+
+  <ul>
+    <li><strong><a href="https://aadis12.github.io/student/NestedConditionalsHomework/">Nested Conditionals Homework</a></strong> - Relates to "Control Structures — Iteration, Conditions, Nested Conditions". This homework demonstrates my understanding of complex decision-making logic using nested if-else statements, which is crucial for game mechanics like boss behavior and win/lose conditions in the Peppa Pig game.</li>
+    <li><strong><a href="https://aadis12.github.io/student/IterationsHomework/">Iterations Homework</a></strong> - Relates to "Control Structures — Iteration, Conditions, Nested Conditions". Shows proficiency in loops and iteration, essential for game loops, collision detection, and processing arrays of game objects like lasers and enemies.</li>
+    <li><strong><a href="https://aadis12.github.io/student/ClassesandMethodsHomework/">Classes and Methods Homework</a></strong> - Relates to "OOP — Classes, Inheritance & Constructor Chaining" and "Methods & Parameters". Demonstrates object-oriented programming fundamentals, including class design, method implementation, and inheritance — the foundation of the game's class hierarchy (PeppaBossEnemy, PeppaBattleLevelBase, etc.).</li>
+    <li><strong><a href="https://aadis12.github.io/student/ArrayHomework/">Arrays Homework</a></strong> - Relates to "Data Types". Shows understanding of array manipulation, indexing, and iteration, which is used throughout the game for managing collections of objects like laser arrays, level configurations, and leaderboard data.</li>
+    <li><strong><a href="https://aadis12.github.io/student/BooleansHomework/">Booleans Homework</a></strong> - Relates to "Data Types" and "Operators". Demonstrates boolean logic and state management, critical for game flags like isDefeated, isVulnerable, and battleEnded that control game flow and behavior.</li>
+    <li><strong><a href="https://aadis12.github.io/student/DataAbstractionHomework/">Data Abstraction Homework</a></strong> - Relates to "Data Types" and "OOP — Classes, Inheritance & Constructor Chaining". Shows ability to design abstract data types and encapsulate data, similar to how the game uses config objects and class properties to manage complex state.</li>
+    <li><strong><a href="https://aadis12.github.io/student/JSONHomework/">JSON Homework</a></strong> - Relates to "API Integration — Leaderboard & Async I/O". Demonstrates JSON parsing and serialization, directly applicable to the game's leaderboard API integration where scores are sent and received as JSON objects.</li>
+    <li><strong><a href="https://aadis12.github.io/student/MathmaticalExpressionsHomework/">Mathematical Expressions Homework</a></strong> - Relates to "Operators" and "Data Types". Shows understanding of mathematical operations and expressions, used in the game for position calculations, collision detection, and score computations.</li>
+    <li><strong><a href="https://aadis12.github.io/student/StringsHomework/">Strings Homework</a></strong> - Relates to "Data Types" and "Input / Output". Demonstrates string manipulation and processing, which appears in the game through player names, console logging, and string template literals for dynamic messages.</li>
+  </ul>
+
+  <div class="callout callout-green">
+    <strong>Homework-blog connection:</strong> Each homework assignment reinforces the programming concepts I applied in building the Peppa Pig Fight Club game, showing a comprehensive understanding of CS111 fundamentals across multiple independent projects.
+  </div>
+
+  
   <div class="footer">
     Built with JavaScript, Canvas API, and the OCS GameEngine<br>
     CSSE Final Project — Sprint 6 &bull; Aadi Saini &bull; Mar 23, 2026
   </div>
  
 </div>
+<script>
+(function() {
+  const containers = document.querySelectorAll('.code-runner-container');
+  if (!containers.length || typeof CodeMirror === 'undefined') return;
+
+  containers.forEach(container => {
+    const textarea = container.querySelector('.editor-textarea');
+    const storageKey = container.dataset.storageKey;
+    const savedCode = storageKey ? localStorage.getItem(storageKey) : null;
+    const defaultCode = textarea.textContent || '';
+    const initialCode = savedCode !== null ? savedCode : defaultCode;
+
+    const editor = CodeMirror.fromTextArea(textarea, {
+      lineNumbers: true,
+      mode: 'javascript',
+      theme: 'darcula',
+      indentUnit: 4,
+      tabSize: 4
+    });
+    editor.setValue(initialCode);
+
+    const runBtn = container.querySelector('.runBtn');
+    const copyBtn = container.querySelector('.copyBtn');
+    const saveBtn = container.querySelector('.saveBtn');
+    const clearBtn = container.querySelector('.clearStorageBtn');
+    const outputContent = container.querySelector('.output-content');
+    const lineCount = container.querySelector('.lineCount');
+    const charCount = container.querySelector('.charCount');
+    const execTime = container.querySelector('.execTime');
+    const languageSelect = container.querySelector('.languageSelect');
+    const fontSizeSelect = container.querySelector('.fontSizeSelect');
+
+    function refreshStats() {
+      const code = editor.getValue();
+      lineCount.textContent = `Lines: ${code.split('\n').length}`;
+      charCount.textContent = `Characters: ${code.length}`;
+    }
+
+    editor.on('change', refreshStats);
+    refreshStats();
+
+    fontSizeSelect?.addEventListener('change', () => {
+      const size = fontSizeSelect.value;
+      const cm = container.querySelector('.CodeMirror');
+      if (cm) cm.style.fontSize = size + 'px';
+      editor.refresh();
+    });
+
+    languageSelect?.addEventListener('change', () => {
+      const lang = languageSelect.value;
+      if (lang === 'javascript') editor.setOption('mode', 'javascript');
+      if (lang === 'python') editor.setOption('mode', 'python');
+      if (lang === 'java') editor.setOption('mode', 'text/x-java');
+    });
+
+    clearBtn?.addEventListener('click', () => {
+      if (storageKey) localStorage.removeItem(storageKey);
+      editor.setValue(defaultCode);
+      outputContent.textContent = 'Storage cleared. Code reset to default.';
+      execTime.textContent = '';
+    });
+
+    saveBtn?.addEventListener('click', () => {
+      if (storageKey) localStorage.setItem(storageKey, editor.getValue());
+      const old = saveBtn.textContent;
+      saveBtn.textContent = '✔';
+      setTimeout(() => saveBtn.textContent = old, 1200);
+    });
+
+    copyBtn?.addEventListener('click', () => {
+      navigator.clipboard.writeText(editor.getValue());
+      const old = copyBtn.textContent;
+      copyBtn.textContent = '✔';
+      setTimeout(() => copyBtn.textContent = old, 1200);
+    });
+
+    container.querySelector('.copyOutputBtn')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(outputContent.textContent);
+    });
+
+    function runCode() {
+      const code = editor.getValue();
+      const lang = languageSelect?.value || 'javascript';
+      outputContent.textContent = '⏳ Running...';
+      execTime.textContent = '';
+      const start = Date.now();
+
+      if (lang === 'javascript') {
+        const logs = [];
+        const origLog = console.log;
+        console.log = (...args) => {
+          logs.push(args.map(a => String(a)).join(' '));
+          origLog.apply(console, args);
+        };
+
+        try {
+          // eslint-disable-next-line no-eval
+          eval(code);
+          outputContent.textContent = logs.length ? logs.join('\n') : '[no output]';
+        } catch (err) {
+          outputContent.textContent = 'Error: ' + (err.message || err);
+        } finally {
+          console.log = origLog;
+          execTime.textContent = `⏱ Execution time: ${Date.now() - start}ms`;
+        }
+      } else {
+        outputContent.textContent = `⚠️ ${lang} execution is only available when integrated with the backend API. (Use site environment)`;
+      }
+    }
+
+    runBtn?.addEventListener('click', runCode);
+    editor.setOption('extraKeys', { 'Ctrl-Enter': runCode, 'Cmd-Enter': runCode });
+  });
+})();
+</script>
 </body>
 </html>
  
