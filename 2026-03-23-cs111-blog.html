@@ -596,6 +596,9 @@ console.log(b.takeDamage(7));</textarea>
     The <code>sprite_data_enemy</code> object directly controls what the boss looks like and where it starts. <code>INIT_POSITION</code> is where the boss spawns on screen when the level loads — I placed it at 72% across the canvas so it starts far from the player at 12%. <code>health</code> and <code>moveSpeed</code> are read by <code>PeppaBossEnemy</code>'s constructor, so changing these numbers in the config is all it takes to make Daddy Pig harder than George Pig without touching any other code.
   </div>
  
+  <h4>📚 Related Homework: Classes and Methods</h4>
+  <p><strong><a href="https://aadis12.github.io/student/ClassesandMethodsHomework/">Classes and Methods Homework</a></strong> - Demonstrates object-oriented programming fundamentals, including class design, method implementation, and inheritance — the foundation of the game's class hierarchy (PeppaBossEnemy, PeppaBattleLevelBase, etc.).</p>
+ 
   <hr>
  
   <!-- SECTION 3: METHODS -->
@@ -724,6 +727,9 @@ console.log(b.takeDamage(7));</textarea>
     The <code>!</code> operator flips <code>showHitbox</code> between <code>true</code> and <code>false</code> each time this is called. Inside <code>update()</code>, that boolean is checked every frame — when it's <code>true</code>, <code>drawHitbox()</code> fires and the red overlay appears on screen. When it's <code>false</code>, nothing extra is drawn. This lets me toggle the debug view in a live running game without restarting, which was essential for tuning hitbox sizes during playtesting.
   </div>
  
+  <h4>📚 Related Homework: Classes and Methods</h4>
+  <p><strong><a href="https://aadis12.github.io/student/ClassesandMethodsHomework/">Classes and Methods Homework</a></strong> - Demonstrates object-oriented programming fundamentals, including class design, method implementation, and inheritance — the foundation of the game's class hierarchy (PeppaBossEnemy, PeppaBattleLevelBase, etc.).</p>
+ 
   <hr>
  
   <!-- SECTION 4: DATA TYPES -->
@@ -762,6 +768,18 @@ console.log(b.takeDamage(7));</textarea>
       </tr>
     </table>
   </div>
+ 
+  <h4>📚 Related Homework: Arrays</h4>
+  <p><strong><a href="https://aadis12.github.io/student/ArrayHomework/">Arrays Homework</a></strong> - Shows understanding of array manipulation, indexing, and iteration, which is used throughout the game for managing collections of objects like laser arrays, level configurations, and leaderboard data.</p>
+ 
+  <h4>📚 Related Homework: Booleans</h4>
+  <p><strong><a href="https://aadis12.github.io/student/BooleansHomework/">Booleans Homework</a></strong> - Demonstrates boolean logic and state management, critical for game flags like isDefeated, isVulnerable, and battleEnded that control game flow and behavior.</p>
+ 
+  <h4>📚 Related Homework: Data Abstraction</h4>
+  <p><strong><a href="https://aadis12.github.io/student/DataAbstractionHomework/">Data Abstraction Homework</a></strong> - Shows ability to design abstract data types and encapsulate data, similar to how the game uses config objects and class properties to manage complex state.</p>
+ 
+  <h4>📚 Related Homework: Strings</h4>
+  <p><strong><a href="https://aadis12.github.io/student/StringsHomework/">Strings Homework</a></strong> - Demonstrates string manipulation and processing, which appears in the game through player names, console logging, and string template literals for dynamic messages.</p>
  
   <hr>
  
@@ -814,6 +832,9 @@ console.log(b.takeDamage(7));</textarea>
   <div class="annotation">
     These four conditions together check whether a laser rectangle and the boss rectangle overlap on both axes at the same time. If the laser has passed the boss's left edge (<code>hitLeft &lt; boss.x + boss.width</code>), hasn't gone past the right edge, is below the top, and above the bottom — all four true simultaneously means the rectangles intersect and the laser hit. If any one condition is false — for example the laser flew past the boss entirely — the <code>&amp;&amp;</code> chain short-circuits and no damage is dealt. This is what makes hit detection in the game feel spatially accurate rather than registering hits at arbitrary distances.
   </div>
+ 
+  <h4>📚 Related Homework: Mathematical Expressions</h4>
+  <p><strong><a href="https://aadis12.github.io/student/MathmaticalExpressionsHomework/">Mathematical Expressions Homework</a></strong> - Shows understanding of mathematical operations and expressions, used in the game for position calculations, collision detection, and score computations.</p>
  
   <hr>
  
@@ -879,6 +900,12 @@ console.log(b.takeDamage(7));</textarea>
   <div class="annotation">
     These two layers of conditions prevent the player from holding SPACE and spamming infinite lasers. The outer condition checks that the player actually pressed SPACE this frame (<code>attackRequested</code> gets set to <code>true</code> by the keydown listener). The inner condition then checks two things with <code>&amp;&amp;</code>: enough time has passed since the last shot (the cooldown) AND the boss isn't already dead. If both pass, a laser is spawned and <code>lastAttackAt</code> is updated to restart the cooldown. The result is the player fires one laser at a time with a short delay between shots — which is what gives the combat its rhythm and makes it a challenge rather than a one-button win.
   </div>
+ 
+  <h4>📚 Related Homework: Nested Conditionals</h4>
+  <p><strong><a href="https://aadis12.github.io/student/NestedConditionalsHomework/">Nested Conditionals Homework</a></strong> - Relates to "Control Structures — Iteration, Conditions, Nested Conditions". This homework demonstrates my understanding of complex decision-making logic using nested if-else statements, which is crucial for game mechanics like boss behavior and win/lose conditions in the Peppa Pig game.</p>
+ 
+  <h4>📚 Related Homework: Iterations</h4>
+  <p><strong><a href="https://aadis12.github.io/student/IterationsHomework/">Iterations Homework</a></strong> - Relates to "Control Structures — Iteration, Conditions, Nested Conditions". Shows proficiency in loops and iteration, essential for game loops, collision detection, and processing arrays of game objects like lasers and enemies.</p>
  
   <hr>
  
@@ -1042,6 +1069,9 @@ Game.<span class="fn">main</span>(environment);   <span class="cm">// launches t
   <div class="annotation">
     Both methods use <strong>async/await</strong> for asynchronous I/O, <strong>try/catch</strong> for API error handling, and <strong>JSON parsing</strong> via <code>response.json()</code>. The GET method also uses <strong>object destructuring</strong> (<code>{ player, score, date }</code>) to unpack each response entry.
   </div>
+ 
+  <h4>📚 Related Homework: JSON</h4>
+  <p><strong><a href="https://aadis12.github.io/student/JSONHomework/">JSON Homework</a></strong> - Demonstrates JSON parsing and serialization, directly applicable to the game's leaderboard API integration where scores are sent and received as JSON objects.</p>
  
   <hr>
  
@@ -1416,22 +1446,13 @@ await getLeaderboard();</textarea>
   <hr>
 
   <!-- HOMEWORK LINKS SECTION -->
-  <h2 id="homework-links">📚 All Homework Links</h2>
+  <h2 id="homework-links">📚 Homework Assignments</h2>
   <p>
-    Below are links to all my CS111 homework assignments, each demonstrating key concepts covered in this blog. I've included brief explanations of how each homework relates to the main topics discussed and what understanding it shows.
+    All CS111 homework assignments have been integrated into their relevant sections above, where they directly demonstrate the concepts discussed. Each homework link appears in the section it best exemplifies, with explanations of how it relates to the main topics.
   </p>
-
-  <ul>
-    <li><strong><a href="https://aadis12.github.io/student/NestedConditionalsHomework/">Nested Conditionals Homework</a></strong> - Relates to "Control Structures — Iteration, Conditions, Nested Conditions". This homework demonstrates my understanding of complex decision-making logic using nested if-else statements, which is crucial for game mechanics like boss behavior and win/lose conditions in the Peppa Pig game.</li>
-    <li><strong><a href="https://aadis12.github.io/student/IterationsHomework/">Iterations Homework</a></strong> - Relates to "Control Structures — Iteration, Conditions, Nested Conditions". Shows proficiency in loops and iteration, essential for game loops, collision detection, and processing arrays of game objects like lasers and enemies.</li>
-    <li><strong><a href="https://aadis12.github.io/student/ClassesandMethodsHomework/">Classes and Methods Homework</a></strong> - Relates to "OOP — Classes, Inheritance & Constructor Chaining" and "Methods & Parameters". Demonstrates object-oriented programming fundamentals, including class design, method implementation, and inheritance — the foundation of the game's class hierarchy (PeppaBossEnemy, PeppaBattleLevelBase, etc.).</li>
-    <li><strong><a href="https://aadis12.github.io/student/ArrayHomework/">Arrays Homework</a></strong> - Relates to "Data Types". Shows understanding of array manipulation, indexing, and iteration, which is used throughout the game for managing collections of objects like laser arrays, level configurations, and leaderboard data.</li>
-    <li><strong><a href="https://aadis12.github.io/student/BooleansHomework/">Booleans Homework</a></strong> - Relates to "Data Types" and "Operators". Demonstrates boolean logic and state management, critical for game flags like isDefeated, isVulnerable, and battleEnded that control game flow and behavior.</li>
-    <li><strong><a href="https://aadis12.github.io/student/DataAbstractionHomework/">Data Abstraction Homework</a></strong> - Relates to "Data Types" and "OOP — Classes, Inheritance & Constructor Chaining". Shows ability to design abstract data types and encapsulate data, similar to how the game uses config objects and class properties to manage complex state.</li>
-    <li><strong><a href="https://aadis12.github.io/student/JSONHomework/">JSON Homework</a></strong> - Relates to "API Integration — Leaderboard & Async I/O". Demonstrates JSON parsing and serialization, directly applicable to the game's leaderboard API integration where scores are sent and received as JSON objects.</li>
-    <li><strong><a href="https://aadis12.github.io/student/MathmaticalExpressionsHomework/">Mathematical Expressions Homework</a></strong> - Relates to "Operators" and "Data Types". Shows understanding of mathematical operations and expressions, used in the game for position calculations, collision detection, and score computations.</li>
-    <li><strong><a href="https://aadis12.github.io/student/StringsHomework/">Strings Homework</a></strong> - Relates to "Data Types" and "Input / Output". Demonstrates string manipulation and processing, which appears in the game through player names, console logging, and string template literals for dynamic messages.</li>
-  </ul>
+  <p>
+    For a complete list of all assignments, see the individual section homework links throughout this blog.
+  </p>
 
   <div class="callout callout-green">
     <strong>Homework-blog connection:</strong> Each homework assignment reinforces the programming concepts I applied in building the Peppa Pig Fight Club game, showing a comprehensive understanding of CS111 fundamentals across multiple independent projects.
