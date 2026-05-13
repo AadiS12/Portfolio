@@ -50,6 +50,61 @@ watch-files:
 		sleep 1; \
 	done
 
+###########################################
+# Project Registration Targets
+###########################################
+
+# Build all registered projects
+build-registered-projects:
+	@if [ ! -f "_projects/.makeprojects" ]; then \
+		echo "⚠ _projects/.makeprojects not found"; \
+		exit 1; \
+	fi
+	@echo "🏗️  Building registered projects..."
+	@while IFS= read -r line; do \
+		if [ -z "$$line" ] || [[ "$$line" =~ ^# ]]; then continue; fi; \
+		project_path=$$(echo "$$line" | cut -d':' -f1); \
+		if [ -d "_projects/$$project_path" ]; then \
+			if [ ! -f "_projects/$$project_path/Makefile" ]; then \
+				echo "  📋 Copying Makefile template to $$project_path..."; \
+				cp "_projects/_template/Makefile" "_projects/$$project_path/Makefile"; \
+			fi; \
+			echo "📦 Building: $$project_path"; \
+			make -C "_projects/$$project_path" build || echo "⚠ Failed to build $$project_path"; \
+		else \
+			echo "⚠ Project not found: _projects/$$project_path"; \
+		fi; \
+	done < "_projects/.makeprojects"
+	@echo "✅ All registered projects built"
+
+# Build all registered project documentation
+build-registered-docs:
+	@if [ ! -f "_projects/.makeprojects" ]; then \
+		echo "⚠ _projects/.makeprojects not found"; \
+		exit 0; \
+	fi
+	@echo "📚 Building registered project docs..."
+	@found_any=false; \
+	while IFS= read -r line; do \
+		if [ -z "$$line" ] || [[ "$$line" =~ ^# ]]; then continue; fi; \
+		project_path=$$(echo "$$line" | cut -d':' -f1); \
+		if [ -d "_projects/$$project_path" ]; then \
+			if [ ! -f "_projects/$$project_path/Makefile" ]; then \
+				cp "_projects/_template/Makefile" "_projects/$$project_path/Makefile"; \
+			fi; \
+			if [ -d "_projects/$$project_path/docs" ]; then \
+				echo "📄 Publishing docs: $$project_path"; \
+				make -C "_projects/$$project_path" docs || echo "⚠ Failed to publish docs for $$project_path"; \
+				found_any=true; \
+			fi; \
+		fi; \
+	done < "_projects/.makeprojects"; \
+	if [ "$$found_any" = false ]; then \
+		echo "ℹ️  No docs found in registered projects"; \
+	else \
+		echo "✅ Project docs published"; \
+	fi
+
 use-minima:
 	@echo "Switching to Minima theme..."
 	@cp _themes/minima/_config.yml _config.yml
