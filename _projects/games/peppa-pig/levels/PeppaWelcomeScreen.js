@@ -5,6 +5,14 @@ const CHARACTERS = [
     { id: 'daddy',   name: 'Daddy Pig',   image: 'daddy-pig.png'    }
 ];
 
+function safeLocalStorageSet(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch (error) {
+        console.warn('PeppaWelcomeScreen: localStorage write failed for', key, error);
+    }
+}
+
 class PeppaWelcomeScreen {
     constructor(gameEnv) {
         this.gameEnv = gameEnv;
@@ -118,7 +126,7 @@ class PeppaWelcomeScreen {
 
     selectMode(mode) {
         this.selectedMode = mode;
-        localStorage.setItem('peppaGameMode', mode);
+        safeLocalStorageSet('peppaGameMode', mode);
 
         if (mode === 'twoPlayer') {
             this.fadeOut('peppa-welcome-wrapper', () => this.createCharacterSelectScreen());
@@ -302,10 +310,10 @@ class PeppaWelcomeScreen {
     }
 
     confirmCharacters() {
-        localStorage.setItem('peppaPlayer1CharImage', this.p1Character.image);
-        localStorage.setItem('peppaPlayer1CharName',  this.p1Character.name);
-        localStorage.setItem('peppaPlayer2CharImage', this.p2Character.image);
-        localStorage.setItem('peppaPlayer2CharName',  this.p2Character.name);
+        safeLocalStorageSet('peppaPlayer1CharImage', this.p1Character.image);
+        safeLocalStorageSet('peppaPlayer1CharName',  this.p1Character.name);
+        safeLocalStorageSet('peppaPlayer2CharImage', this.p2Character.image);
+        safeLocalStorageSet('peppaPlayer2CharName',  this.p2Character.name);
         this.fadeOut('peppa-char-select-wrapper', () => this.startGame());
     }
 

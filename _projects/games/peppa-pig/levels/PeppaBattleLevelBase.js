@@ -2,6 +2,24 @@ import GameEnvBackground from '@assets/js/GameEnginev1.1/essentials/GameEnvBackg
 import Player from '@assets/js/GameEnginev1.1/essentials/Player.js';
 import PeppaBossEnemy from './PeppaBossEnemy.js';
 
+function safeLocalStorageGet(key, fallback = '') {
+    try {
+        const value = localStorage.getItem(key);
+        return value !== null ? value : fallback;
+    } catch (error) {
+        console.warn('PeppaBattleLevelBase: localStorage access failed for', key, error);
+        return fallback;
+    }
+}
+
+function safeLocalStorageSet(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch (error) {
+        console.warn('PeppaBattleLevelBase: localStorage write failed for', key, error);
+    }
+}
+
 class PeppaBattleLevelBase {
     constructor(gameEnv, config) {
         this.gameEnv = gameEnv;
@@ -13,7 +31,7 @@ class PeppaBattleLevelBase {
 
         // Game mode: 'singlePlayer' or 'twoPlayer' (from welcome screen or config)
         // First check config, then check localStorage (from welcome screen), default to singlePlayer
-        this.gameMode = config.gameMode ?? localStorage.getItem('peppaGameMode') ?? 'singlePlayer';
+        this.gameMode = config.gameMode ?? safeLocalStorageGet('peppaGameMode') ?? 'singlePlayer';
 
         // Player 1 health
         this.playerMaxHealth = config.playerHealth ?? 5;
@@ -61,6 +79,8 @@ class PeppaBattleLevelBase {
         this.enemySpawn = { x: width * 0.72, y: height * 0.66 };
         this.initialPositionsSet = false;
         this.messageClearTimeout = null;
+        this.cachedHudElements = {};
+        this.lastLaserLayerSize = { width: 0, height: 0 };
 
         const image_data_background = {
             name: `peppa-${config.levelId}-arena`,
@@ -70,10 +90,10 @@ class PeppaBattleLevelBase {
         };
 
         // Read character selections saved by the welcome/character-select screen
-        const p1CharImage = localStorage.getItem('peppaPlayer1CharImage') || 'ishan-jha.png';
-        const p1CharName  = localStorage.getItem('peppaPlayer1CharName')  || 'Ishan';
-        const p2CharImage = localStorage.getItem('peppaPlayer2CharImage') || 'ishan-jha.png';
-        const p2CharName  = localStorage.getItem('peppaPlayer2CharName')  || 'Player 2';
+        const p1CharImage = safeLocalStorageGet('peppaPlayer1CharImage', 'ishan-jha.png');
+        const p1CharName  = safeLocalStorageGet('peppaPlayer1CharName', 'Ishan');
+        const p2CharImage = safeLocalStorageGet('peppaPlayer2CharImage', 'ishan-jha.png');
+        const p2CharName  = safeLocalStorageGet('peppaPlayer2CharName', 'Player 2');
 
         const p1Image = this.gameMode === 'twoPlayer' ? p1CharImage : 'ishan-jha.png';
         const p1Name  = this.gameMode === 'twoPlayer' ? p1CharName  : 'Ishan';
@@ -165,7 +185,7 @@ class PeppaBattleLevelBase {
     ensurePlayerName() {
         if (this.playerName && this.playerName.trim()) return;
 
-        const savedName = localStorage.getItem('peppaPlayerName');
+        const savedName = safeLocalStorageGet('peppaPlayerName');
         if (savedName && savedName.trim()) {
             this.playerName = savedName.trim();
             return;
@@ -177,7 +197,7 @@ class PeppaBattleLevelBase {
         }
 
         this.playerName = inputName.trim().slice(0, 20);
-        localStorage.setItem('peppaPlayerName', this.playerName);
+        safeLocalStorageSet('peppaPlayerName', this.playerName);
     }
 
     generateCoins() {
@@ -267,6 +287,26 @@ class PeppaBattleLevelBase {
         }
     }
 
+    saveScoreLocal(score) {
+        try {
+            const leaderboardKey = `peppa-leaderboard-${this.config.levelId}`;
+            const currentLeaderboard = this.loadLeaderboardLocal();
+            const newEntry = {
+                name: this.playerName || 'Player',
+                score,
+                timestamp: Date.now()
+            };
+
+            currentLeaderboard.push(newEntry);
+            safeLocalStorageSet(leaderboardKey, JSON.stringify(currentLeaderboard));
+            this.leaderboard = currentLeaderboard;
+            return currentLeaderboard;
+        } catch (error) {
+            console.error('Error saving score locally:', error);
+            return [];
+        }
+    }
+
     async loadLeaderboard() {
         if (!this.apiBase) {
             // Use localStorage for leaderboard if no API
@@ -294,7 +334,8 @@ class PeppaBattleLevelBase {
     loadLeaderboardLocal() {
         try {
             const leaderboardKey = `peppa-leaderboard-${this.config.levelId}`;
-            const data = JSON.parse(localStorage.getItem(leaderboardKey) || '[]');
+            const json = safeLocalStorageGet(leaderboardKey, '[]');
+            const data = JSON.parse(json || '[]');
             return Array.isArray(data) ? data : [];
         } catch (error) {
             console.error('Error loading leaderboard locally:', error);
@@ -480,13 +521,22 @@ class PeppaBattleLevelBase {
     }
 
     updateLasers() {
-        const ctx = this.laserLayer?.getContext('2d');
-        if (!ctx) return;
+        if (!this.laserLayer) return;
 
-        this.laserLayer.width = this.gameEnv.innerWidth;
-        this.laserLayer.height = this.gameEnv.innerHeight;
-        this.laserLayer.style.width = `${this.gameEnv.innerWidth}px`;
-        this.laserLayer.style.height = `${this.gameEnv.innerHeight}px`;
+        const width = this.gameEnv.innerWidth;
+        const height = this.gameEnv.innerHeight;
+
+        if (this.lastLaserLayerSize.width !== width || this.lastLaserLayerSize.height !== height) {
+            this.laserLayer.width = width;
+            this.laserLayer.height = height;
+            this.laserLayer.style.width = `${width}px`;
+            this.laserLayer.style.height = `${height}px`;
+            this.lastLaserLayerSize.width = width;
+            this.lastLaserLayerSize.height = height;
+        }
+
+        const ctx = this.laserLayer.getContext('2d');
+        if (!ctx) return;
 
         const player = this.getPlayer();
         const player2 = this.getPlayer2();
@@ -748,13 +798,23 @@ class PeppaBattleLevelBase {
         container.style.position = 'relative';
         container.appendChild(this.hud);
 
-        const changeNameBtn = document.getElementById(`peppa-change-name-${this.config.levelId}`);
+        this.cachedHudElements = {
+            playerNameEl: document.getElementById(`peppa-player-name-${this.config.levelId}`),
+            playerHpEl: document.getElementById(`peppa-player-hp-${this.config.levelId}`),
+            player2HpEl: document.getElementById(`peppa-player2-hp-${this.config.levelId}`),
+            coinCountEl: document.getElementById(`peppa-coin-count-${this.config.levelId}`),
+            enemyHpEl: document.getElementById(`peppa-enemy-hp-${this.config.levelId}`),
+            messageEl: document.getElementById(`peppa-message-${this.config.levelId}`),
+            leaderboardEl: document.getElementById(`peppa-leaderboard-${this.config.levelId}`)
+        };
+
+        const changeNameBtn = this.cachedHudElements.playerNameEl ? document.getElementById(`peppa-change-name-${this.config.levelId}`) : null;
         if (changeNameBtn) {
             changeNameBtn.addEventListener('click', () => {
                 const newName = window.prompt('Enter a new leaderboard name:', this.playerName || 'Player');
                 if (newName && newName.trim()) {
                     this.playerName = newName.trim().slice(0, 20);
-                    localStorage.setItem('peppaPlayerName', this.playerName);
+                    safeLocalStorageSet('peppaPlayerName', this.playerName);
                     this.updateHud('Name updated.');
                 }
             });
@@ -762,12 +822,14 @@ class PeppaBattleLevelBase {
     }
 
     updateHud(message = null) {
-        const playerNameEl = document.getElementById(`peppa-player-name-${this.config.levelId}`);
-        const playerHpEl = document.getElementById(`peppa-player-hp-${this.config.levelId}`);
-        const player2HpEl = document.getElementById(`peppa-player2-hp-${this.config.levelId}`);
-        const coinCountEl = document.getElementById(`peppa-coin-count-${this.config.levelId}`);
-        const enemyHpEl = document.getElementById(`peppa-enemy-hp-${this.config.levelId}`);
-        const messageEl = document.getElementById(`peppa-message-${this.config.levelId}`);
+        const {
+            playerNameEl,
+            playerHpEl,
+            player2HpEl,
+            coinCountEl,
+            enemyHpEl,
+            messageEl
+        } = this.cachedHudElements;
 
         const boss = this.getBoss();
 
