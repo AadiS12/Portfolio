@@ -20,10 +20,10 @@ destination_directory = "_posts"
 mermaid_output_directory = "assets/mermaid"
 
 # Comment patterns for different languages
-CODE_RUNNER_PATTERNS = {
-    'javascript': r'^//\s*CODE_RUNNER:\s*(.+)$',
-    'python': r'^#\s*CODE_RUNNER:\s*(.+)$',
-    'java': r'^//\s*CODE_RUNNER:\s*(.+)$',
+RUNNER_PATTERNS = {
+    'javascript': r'^//\s*(?:CODE_RUNNER|GAME_RUNNER):\s*(.+)$',
+    'python': r'^#\s*(?:CODE_RUNNER|GAME_RUNNER):\s*(.+)$',
+    'java': r'^//\s*(?:CODE_RUNNER|GAME_RUNNER):\s*(.+)$',
 }
 
 
@@ -72,18 +72,43 @@ def fix_js_code_blocks(markdown):
     return markdown
 
 
+def parse_runner_options(raw_challenge):
+    """Parse runner challenge text and inline options from GAME_RUNNER/CODE_RUNNER comments."""
+    challenge_text = raw_challenge
+    options = {}
+
+    if '|' in raw_challenge:
+        challenge_text, options_part = raw_challenge.split('|', 1)
+        challenge_text = challenge_text.strip()
+        for option in options_part.split(','):
+            if ':' in option:
+                key, value = option.split(':', 1)
+                options[key.strip()] = value.strip()
+
+    return challenge_text, options
+
+
 def extract_code_runner_metadata(cell_source, language):
-    """Extract CODE_RUNNER challenge from cell comments"""
-    if language not in CODE_RUNNER_PATTERNS:
+    """Extract CODE_RUNNER or GAME_RUNNER challenge from cell comments"""
+    if language not in RUNNER_PATTERNS:
         return None
     
-    pattern = CODE_RUNNER_PATTERNS[language]
+    pattern = RUNNER_PATTERNS[language]
     lines = cell_source.split('\n')
     
     for line in lines:
-        match = re.match(pattern, line.strip(), re.IGNORECASE)
+        stripped = line.strip()
+        match = re.match(pattern, stripped, re.IGNORECASE)
         if match:
-            return match.group(1).strip()
+            raw_challenge = match.group(1).strip()
+            challenge_text, options = parse_runner_options(raw_challenge)
+            runner_type = 'game' if 'GAME_RUNNER:' in stripped.upper() else 'code'
+            return {
+                'raw': raw_challenge,
+                'challenge': challenge_text,
+                'options': options,
+                'runner_type': runner_type,
+            }
     
     return None
 
@@ -93,9 +118,9 @@ def clean_code_for_runner(cell_source, language):
     lines = cell_source.split('\n')
     cleaned_lines = []
     
-    # Pattern for CODE_RUNNER comments
-    if language in CODE_RUNNER_PATTERNS:
-        pattern = CODE_RUNNER_PATTERNS[language]
+    # Pattern for CODE_RUNNER/GAME_RUNNER comments
+    if language in RUNNER_PATTERNS:
+        pattern = RUNNER_PATTERNS[language]
     else:
         pattern = None
     
@@ -171,13 +196,15 @@ def process_code_runner_cells(notebook, permalink):
     for cell in notebook.cells:
         if cell.cell_type == 'code':
             language = detect_cell_language(cell)
-            challenge = extract_code_runner_metadata(cell.source, language)
+            runner_meta = extract_code_runner_metadata(cell.source, language)
             
-            if challenge:
+            if runner_meta:
                 # Store metadata for later use
                 cell['metadata']['code_runner'] = {
-                    'challenge': challenge,
+                    'challenge': runner_meta['challenge'],
                     'language': language,
+                    'runner_type': runner_meta['runner_type'],
+                    'options': runner_meta['options'],
                     'runner_id': generate_runner_id(permalink, runner_index),
                     'code': clean_code_for_runner(cell.source, language)
                 }
@@ -260,13 +287,29 @@ def inject_code_runners(markdown, notebook, front_matter=None):
                     result.extend(code_block_content)
                     result.append('{% endcapture %}')
                     result.append('')
-                    result.append('{% include code-runner.html')
+                    if runner_data.get('runner_type') == 'game':
+                        result.append('{% include runners/game.html')
+                    else:
+                        result.append('{% include code-runner.html')
                     result.append('   runner_id="' + runner_data['runner_id'] + '"')
                     result.append('   language="' + runner_data['language'] + '"')
                     result.append('   challenge=challenge' + str(code_runner_count))
                     result.append('   code=code' + str(code_runner_count))
                     result.append('   source=source' + str(code_runner_count))
-                    result.append('%}')                
+                    
+                    # Apply game runner options if present
+                    if runner_data.get('runner_type') == 'game':
+                        if 'hide_edit' in runner_data['options']:
+                            result.append('   hide_edit="' + runner_data['options']['hide_edit'] + '"')
+                        if 'width' in runner_data['options']:
+                            result.append('   width="' + runner_data['options']['width'] + '"')
+                        if 'height' in runner_data['options']:
+                            result.append('   height="' + runner_data['options']['height'] + '"')
+                        if 'editor_height' in runner_data['options']:
+                            result.append('   editor_height="' + runner_data['options']['editor_height'] + '"')
+                        if 'levels' in runner_data['options']:
+                            result.append('   levels="' + runner_data['options']['levels'] + '"')
+                    result.append('%}')
                     result.append('')
                     code_runner_count += 1
                 else:
