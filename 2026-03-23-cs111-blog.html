@@ -208,17 +208,57 @@
   .checklist li::before { content: '✅ '; }
  
   .toc {
-    background: #161b22;
+    background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
     border: 1px solid #30363d;
-    border-radius: 8px;
-    padding: 18px 22px;
+    border-top: 3px solid #1f6feb;
+    border-radius: 10px;
+    padding: 22px 28px;
     margin-bottom: 40px;
     font-size: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   }
-  .toc h4 { margin: 0 0 12px; }
-  .toc ol { margin-left: 18px; }
-  .toc li { margin-bottom: 4px; }
-  .toc a { color: #58a6ff; }
+  .toc h4 {
+    margin: 0 0 16px;
+    font-size: 15px;
+    color: #f0f6fc;
+    letter-spacing: 0.03em;
+  }
+  .toc ol {
+    margin-left: 0;
+    padding-left: 0;
+    counter-reset: toc-counter;
+    list-style: none;
+  }
+  .toc li {
+    counter-increment: toc-counter;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    transition: background 0.15s;
+  }
+  .toc li:hover { background: #21262d; }
+  .toc li::before {
+    content: counter(toc-counter);
+    min-width: 22px;
+    height: 22px;
+    background: #1f6feb;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .toc a {
+    color: #c9d1d9;
+    transition: color 0.15s;
+  }
+  .toc a:hover { color: #58a6ff; text-decoration: none; }
  
  
   .hero-actions {
@@ -1008,73 +1048,123 @@ Game.<span class="fn">main</span>(environment);   <span class="cm">// launches t
   <hr>
  
   <!-- SECTION 8: API -->
-  <h2 id="api">🌐 API Integration — Leaderboard &amp; Async I/O</h2>
+  <h2 id="api">🌐 API Integration — iTunes Music API &amp; Async I/O</h2>
   <p>
-    The game integrates with a backend leaderboard API using <code>fetch()</code> with <code>async/await</code>. Scores are POSTed when the player wins, and the top scores are GETted for display.
+    An API (Application Programming Interface) is a way for your code to talk to an external service over the internet. You send a request, the service sends back data — usually as JSON. In the game, this same pattern is used to save scores and fetch leaderboard data. To show how APIs work in a fun way, I used the public <strong>iTunes Search API</strong> to search for songs and play previews directly in the browser.
   </p>
- 
-  <h3>POST Score (async/await + error handling)</h3>
+
+  <h3>How the iTunes API Works</h3>
+  <p>
+    The iTunes Search API is free and requires no API key. You send a GET request with a search term, and it returns a JSON object with an array of matching tracks — each one includes the song name, artist, album art, and a 30-second <code>previewUrl</code> you can feed directly to an <code>Audio</code> object.
+  </p>
+  <pre><code><span class="cm">// Step 1 — build the request URL with a search term</span>
+<span class="kw">const</span> url = <span class="str">'https://itunes.apple.com/search?term=every+breath+you+take+police&entity=song&limit=1'</span>;
+
+<span class="cm">// Step 2 — fetch() sends the HTTP GET request (async — we must await it)</span>
+<span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(url);
+
+<span class="cm">// Step 3 — parse the JSON body (also async)</span>
+<span class="kw">const</span> data = <span class="kw">await</span> response.<span class="fn">json</span>();
+
+<span class="cm">// Step 4 — pull the first result out of the results array</span>
+<span class="kw">const</span> track = data.results[<span class="num">0</span>];
+
+<span class="cm">// Step 5 — use the previewUrl to play the song</span>
+<span class="kw">const</span> audio = <span class="kw">new</span> <span class="cls">Audio</span>(track.previewUrl);
+audio.<span class="fn">play</span>();
+
+console.<span class="fn">log</span>(<span class="str">`Now playing: ${track.trackName} by ${track.artistName}`</span>);</code></pre>
+
+  <h3>Full fetchAndPlay() — async/await + error handling</h3>
   <pre><code><span class="cm">/**
- * Posts the player's score to the leaderboard API.
- * @param {string} playerName - the player's username
- * @param {number} score      - final score to save
- * @returns {Promise&lt;Object&gt;} parsed JSON response from the server
+ * Searches the iTunes API for a song and plays the preview.
+ * @param {string} searchTerm - e.g. "every breath you take police"
+ * @returns {Promise&lt;void&gt;}
  */</span>
-<span class="kw">async</span> <span class="fn">postScore</span>(playerName, score) {
+<span class="kw">async</span> <span class="fn">fetchAndPlay</span>(searchTerm) {
   <span class="kw">try</span> {
-    <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`${<span class="kw">this</span>.gameEnv.pythonURI}/api/leaderboard`</span>, {
-      method:  <span class="str">'POST'</span>,
-      headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
-      body:    JSON.<span class="fn">stringify</span>({ player: playerName, score: score })  <span class="cm">// JSON</span>
-    });
- 
+    <span class="kw">const</span> url = <span class="str">`https://itunes.apple.com/search?term=${<span class="fn">encodeURIComponent</span>(searchTerm)}&entity=song&limit=1`</span>;
+    <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(url);          <span class="cm">// async HTTP GET</span>
+
     <span class="kw">if</span> (!response.ok) {
-      <span class="kw">throw</span> <span class="kw">new</span> <span class="cls">Error</span>(<span class="str">`HTTP error: ${response.status}`</span>);  <span class="cm">// String template</span>
+      <span class="kw">throw</span> <span class="kw">new</span> <span class="cls">Error</span>(<span class="str">`HTTP error: ${response.status}`</span>);
     }
- 
-    <span class="kw">const</span> data = <span class="kw">await</span> response.<span class="fn">json</span>();   <span class="cm">// JSON parsing</span>
-    console.<span class="fn">log</span>(<span class="str">`[Leaderboard] Score saved:`, data</span>);
-    <span class="kw">return</span> data;
- 
-  } <span class="kw">catch</span> (error) {                         <span class="cm">// API error handling</span>
-    console.<span class="fn">error</span>(<span class="str">`[Leaderboard] POST failed:`, error.message</span>);
-    <span class="kw">return</span> <span class="kw">null</span>;
+
+    <span class="kw">const</span> data = <span class="kw">await</span> response.<span class="fn">json</span>();          <span class="cm">// parse JSON response</span>
+    <span class="kw">const</span> { trackName, artistName, previewUrl } = data.results[<span class="num">0</span>];  <span class="cm">// destructuring</span>
+
+    <span class="kw">if</span> (!previewUrl) <span class="kw">throw</span> <span class="kw">new</span> <span class="cls">Error</span>(<span class="str">'No preview available'</span>);
+
+    <span class="kw">new</span> <span class="cls">Audio</span>(previewUrl).<span class="fn">play</span>();
+    console.<span class="fn">log</span>(<span class="str">`Playing: ${trackName} — ${artistName}`</span>);
+
+  } <span class="kw">catch</span> (error) {                              <span class="cm">// API error handling</span>
+    console.<span class="fn">error</span>(<span class="str">`[iTunes] Fetch failed: ${error.message}`</span>);
   }
-}</code></pre>
- 
-  <h3>GET Scores (fetch + JSON.parse + object destructuring)</h3>
-  <pre><code><span class="cm">/**
- * Fetches top leaderboard scores from the API.
- * @returns {Promise&lt;Array&gt;} array of score objects { player, score, date }
- */</span>
-<span class="kw">async</span> <span class="fn">getLeaderboard</span>() {
-  <span class="kw">try</span> {
-    <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`${<span class="kw">this</span>.gameEnv.pythonURI}/api/leaderboard`</span>,
-      <span class="kw">this</span>.gameEnv.fetchOptions
-    );
-    <span class="kw">const</span> data = <span class="kw">await</span> response.<span class="fn">json</span>();       <span class="cm">// JSON.parse equivalent</span>
- 
-    <span class="cm">// Object destructuring on each entry</span>
-    data.<span class="fn">forEach</span>(({ player, score, date }) => {
-      console.<span class="fn">log</span>(<span class="str">`${player}: ${score} pts (${date})`</span>);
-    });
- 
-    <span class="kw">return</span> data;                              <span class="cm">// Array of Objects</span>
- 
-  } <span class="kw">catch</span> (error) {
-    console.<span class="fn">error</span>(<span class="str">`[Leaderboard] GET failed:`, error.message</span>);
-    <span class="kw">return</span> [];                                <span class="cm">// return empty array on failure</span>
-  }
-}</code></pre>
+}
+
+<span class="fn">fetchAndPlay</span>(<span class="str">'every breath you take police'</span>);</code></pre>
   <div class="annotation">
-    Both methods use <strong>async/await</strong> for asynchronous I/O, <strong>try/catch</strong> for API error handling, and <strong>JSON parsing</strong> via <code>response.json()</code>. The GET method also uses <strong>object destructuring</strong> (<code>{ player, score, date }</code>) to unpack each response entry.
+    This uses the same <strong>async/await + try/catch + JSON parsing</strong> pattern as the game's leaderboard API. The only difference is the endpoint. <strong>Object destructuring</strong> (<code>{ trackName, artistName, previewUrl }</code>) pulls exactly the fields we need from the response object.
   </div>
- 
+
+  <h3>Connection to the Game</h3>
+  <p>The game's <code>PeppaMusic</code> class uses this exact same pattern — it calls the iTunes API to fetch background music previews and plays them during gameplay. The same <code>fetch()</code> → <code>await response.json()</code> → extract field → play flow powers both the leaderboard and the in-game music.</p>
+
+  <!-- iTunes Live Demo -->
+  <div style="background:#161b22;border:1px solid #30363d;border-top:3px solid #1f6feb;border-radius:10px;padding:22px 28px;margin:28px 0 0;">
+    <h3 style="margin:0 0 6px;color:#f0f6fc;font-size:17px;">🎵 Live Demo — Play "Every Breath You Take"</h3>
+    <p style="margin:0 0 18px;font-size:14px;color:#8b949e;">Click the button to make a real iTunes API call and play the 30-second preview in your browser.</p>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <button id="itunesPlayBtn" style="background:#1f6feb;color:#fff;border:none;border-radius:6px;padding:11px 24px;font-size:15px;font-weight:600;cursor:pointer;">▶ Play Every Breath You Take</button>
+      <button id="itunesStopBtn" style="display:none;background:#da3633;color:#fff;border:none;border-radius:6px;padding:11px 24px;font-size:15px;font-weight:600;cursor:pointer;">■ Stop</button>
+      <span id="itunesStatus" style="font-size:13px;color:#8b949e;"></span>
+    </div>
+  </div>
+  <script>
+    (function() {
+      var audio = null;
+      document.getElementById('itunesPlayBtn').addEventListener('click', async function() {
+        var status = document.getElementById('itunesStatus');
+        var playBtn = document.getElementById('itunesPlayBtn');
+        var stopBtn = document.getElementById('itunesStopBtn');
+        status.textContent = 'Fetching from iTunes API...';
+        playBtn.disabled = true;
+        try {
+          var res = await fetch('https://itunes.apple.com/search?term=every+breath+you+take+police&entity=song&limit=1');
+          var data = await res.json();
+          var track = data.results[0];
+          if (!track || !track.previewUrl) { status.textContent = 'No preview URL in response.'; playBtn.disabled = false; return; }
+          if (audio) { audio.pause(); }
+          audio = new Audio(track.previewUrl);
+          await audio.play();
+          status.textContent = '▶ ' + track.trackName + ' — ' + track.artistName;
+          playBtn.style.display = 'none';
+          stopBtn.style.display = '';
+          audio.onended = function() {
+            status.textContent = 'Finished.';
+            playBtn.style.display = ''; playBtn.disabled = false;
+            stopBtn.style.display = 'none';
+          };
+        } catch(e) {
+          status.textContent = 'Error: ' + e.message;
+          playBtn.disabled = false;
+        }
+      });
+      document.getElementById('itunesStopBtn').addEventListener('click', function() {
+        if (audio) { audio.pause(); audio.currentTime = 0; }
+        document.getElementById('itunesStatus').textContent = 'Stopped.';
+        document.getElementById('itunesPlayBtn').style.display = ''; document.getElementById('itunesPlayBtn').disabled = false;
+        document.getElementById('itunesStopBtn').style.display = 'none';
+      });
+    })();
+  </script>
+
   <h4>📚 Related Homework: JSON</h4>
-  <p><strong><a href="https://aadis12.github.io/student/JSONHomework/">JSON Homework</a></strong> - Demonstrates JSON parsing and serialization, directly applicable to the game's leaderboard API integration where scores are sent and received as JSON objects.</p>
- 
+  <p><strong><a href="https://aadis12.github.io/student/JSONHomework/">JSON Homework</a></strong> - Demonstrates JSON parsing and serialization, directly applicable to API integration where data is sent and received as JSON objects.</p>
+
   <hr>
- 
+
   <!-- SECTION 9: COMMENTS -->
   <h2 id="comments">📝 JSDoc Comments &amp; Code Documentation</h2>
   <p>
@@ -1195,11 +1285,11 @@ console.<span class="fn">error</span>(<span class="str">`[Leaderboard] POST fail
     All API calls are wrapped in try/catch so a network failure or backend error never crashes the game. The game continues normally and logs the error to console for debugging. This was verified by testing with the backend server offline.
   </div>
 
-  <!-- Code Runner: API + fetch practice -->
+  <!-- Code Runner: iTunes API practice -->
   <div class="code-runner-container" id="runner-api" data-storage-key="cs111-blog-runner-api">
     <div class="challenge-box">
       <h3>Code Runner Challenge</h3>
-      <p>Experiment with async/await and mock fetch JSON handling. This mimics posting and reading leaderboard data.</p>
+      <p>Practice async/await and JSON parsing using the iTunes Search API. Edit the search term and run it to see the track data returned.</p>
     </div>
     <div class="editor-container">
       <div class="control-panel">
@@ -1210,37 +1300,35 @@ console.<span class="fn">error</span>(<span class="str">`[Leaderboard] POST fail
         <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
         <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option><option value="20">20px</option></select>
       </div>
-      <textarea class="editor-textarea">async function postScore(player, score) {
-  try {
-    const payload = JSON.stringify({ player, score });
-    console.log('POST payload', payload);
-    return { ok: true, data: { player, score, date: '2026-03-24' } };
-  } catch (e) {
-    console.error('postScore error', e.message);
-    return null;
-  }
-}
+      <textarea class="editor-textarea">// iTunes Search API — change the search term and hit Run!
+const searchTerm = 'every breath you take police';
+const url = `https://itunes.apple.com/search?term=${encodeURIComponent(searchTerm)}&entity=song&limit=3`;
 
-async function getLeaderboard() {
-  try {
-    const data = [
-      { player: 'Aadi', score: 300 },
-      { player: 'Ishan', score: 280 }
-    ];
-    data.forEach(({ player, score }) => console.log(`${player}: ${score}`));
-    return data;
-  } catch (e) {
-    console.error('getLeaderboard error', e.message);
-    return [];
-  }
-}
+try {
+  const response = await fetch(url);
 
-await postScore('Player1', 999);
-await getLeaderboard();</textarea>
+  if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+
+  const data = await response.json();
+
+  console.log(`Found ${data.resultCount} result(s) for "${searchTerm}":\n`);
+
+  data.results.forEach(({ trackName, artistName, collectionName, previewUrl }) => {
+    console.log(`Track:  ${trackName}`);
+    console.log(`Artist: ${artistName}`);
+    console.log(`Album:  ${collectionName}`);
+    console.log(`Preview URL: ${previewUrl}`);
+    console.log('---');
+  });
+
+} catch (error) {
+  console.error('API fetch failed:', error.message);
+}</textarea>
       <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
     </div>
     <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click "Run" in code control panel to see output ...</div></div>
   </div>
+
 
   <hr>
 

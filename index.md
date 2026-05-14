@@ -45,7 +45,7 @@ Hi! My name is [Your Full Name]
     </a>
     <a href="{{site.baseurl}}/2026-03-23-cs111-blog.html" style="text-decoration: none;">
         <div style="background-color: #1f6feb; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;">
-            CS111 Blog
+            College Ready Blog
         </div>
     </a>
 </div>
