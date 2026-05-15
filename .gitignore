@@ -55,7 +55,7 @@ _notebooks/projects/
 _posts/projects/
 _sass/projects/
 assets/css/projects/
-images/projects/
+# images/projects/
 
 # Auto-generated project Makefiles (copied from _template at build time)
 _projects/*/Makefile
