@@ -43,11 +43,21 @@ Hi! My name is [Your Full Name]
             Turtle
         </div>
     </a>
-    <a href="{{site.baseurl}}/CollegeReadyBlog.html" style="text-decoration: none;">
-        <div style="background-color: #1f6feb; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;">
-            College Ready Blog
-        </div>
-    </a>
+</div>
+
+<br>
+
+### College Ready Blog
+
+<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;margin-bottom:8px;">
+  <a href="/peppa-pig/" style="text-decoration:none;"><div style="background:#238636;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">▶ Play Peppa Pig Game</div></a>
+  <a href="/oop.html" style="text-decoration:none;"><div style="background:#1f6feb;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">OOP & Methods</div></a>
+  <a href="/data.html" style="text-decoration:none;"><div style="background:#9b59b6;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Data, Operators & Control</div></a>
+  <a href="/io-api.html" style="text-decoration:none;"><div style="background:#e67e22;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">I/O & API</div></a>
+  <a href="/practices.html" style="text-decoration:none;"><div style="background:#16a085;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Coding Practices & SDLC</div></a>
+  <a href="/debugging.html" style="text-decoration:none;"><div style="background:#c0392b;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Docs & Debugging</div></a>
+  <a href="/testing.html" style="text-decoration:none;"><div style="background:#d4ac0d;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Testing & Other Games</div></a>
+  <a href="/CollegeReadyBlog.html" style="text-decoration:none;"><div style="background:#30363d;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Full Blog</div></a>
 </div>
 
 <br>

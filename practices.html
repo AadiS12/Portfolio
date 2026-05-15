@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coding Practices &amp; SDLC — College Ready Blog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/darcula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  a { color: #58a6ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+  }
+
+  .meta {
+    text-align: center;
+    color: #8b949e;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  h1.title {
+    text-align: center;
+    font-size: 34px;
+    font-weight: 700;
+    color: #f0f6fc;
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #8b949e;
+    font-size: 15px;
+    max-width: 620px;
+    margin: 0 auto 48px;
+    line-height: 1.6;
+  }
+
+  hr { border: none; border-top: 1px solid #21262d; margin: 44px 0; }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #f0f6fc;
+    margin: 44px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #21262d;
+  }
+
+  h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: #e6edf3;
+    margin: 28px 0 10px;
+  }
+
+  h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin: 22px 0 8px;
+  }
+
+  p { margin-bottom: 14px; color: #c9d1d9; font-size: 15px; }
+
+  ul { margin: 0 0 16px 20px; }
+  ul li { color: #c9d1d9; font-size: 15px; margin-bottom: 4px; }
+
+  .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+  th {
+    background: #161b22;
+    color: #8b949e;
+    font-weight: 600;
+    text-align: left;
+    padding: 9px 14px;
+    border: 1px solid #30363d;
+    font-size: 13px;
+  }
+
+  td {
+    padding: 9px 14px;
+    border: 1px solid #21262d;
+    color: #c9d1d9;
+    background: #0d1117;
+    vertical-align: top;
+    font-size: 14px;
+  }
+
+  tr:hover td { background: #161b22; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: #161b22;
+    color: #79c0ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #30363d;
+  }
+
+  pre {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin-bottom: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+
+  pre code { background: none; border: none; padding: 0; color: #e6edf3; }
+
+  .kw   { color: #ff7b72; }
+  .fn   { color: #d2a8ff; }
+  .str  { color: #a5d6ff; }
+  .num  { color: #f2cc60; }
+  .cm   { color: #8b949e; font-style: italic; }
+  .cls  { color: #ffa657; }
+  .bool { color: #79c0ff; }
+
+  .annotation {
+    background: #0d1f38;
+    border-left: 3px solid #388bfd;
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    font-size: 13.5px;
+    color: #8b949e;
+    line-height: 1.6;
+  }
+  .annotation strong { color: #c9d1d9; }
+
+  .callout {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #c9d1d9;
+    line-height: 1.6;
+  }
+  .callout strong { color: #f0f6fc; }
+
+  .callout-blue  { border-color: #1f6feb; background: #0d1f38; }
+  .callout-green { border-color: #238636; background: #0d2b1a; }
+  .callout-orange{ border-color: #9e6a03; background: #2b1a0d; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 100px;
+    margin-right: 5px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .b-blue   { background: #0d1f38; color: #58a6ff; border: 1px solid #1f6feb; }
+  .b-green  { background: #0d2b1a; color: #3fb950; border: 1px solid #238636; }
+  .b-orange { background: #2b1a0d; color: #ffa657; border: 1px solid #9e6a03; }
+  .b-purple { background: #1a0d2b; color: #d2a8ff; border: 1px solid #6e40c9; }
+  .b-red    { background: #2b0d0d; color: #ff7b72; border: 1px solid #da3633; }
+
+  .tree {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 18px 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+    margin-bottom: 24px;
+  }
+  .tree-l0 { color: #ffa657; font-weight: 700; }
+  .tree-l1 { color: #79c0ff; margin-left: 22px; display: block; }
+  .tree-l2 { color: #3fb950; margin-left: 44px; display: block; }
+  .tree-note { color: #8b949e; font-size: 12px; }
+
+  .checklist { list-style: none; margin: 0 0 20px; padding: 0; }
+  .checklist li { font-size: 14px; color: #c9d1d9; padding: 3px 0; }
+  .checklist li::before { content: '✅ '; }
+
+  .toc {
+    background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+    border: 1px solid #30363d;
+    border-top: 3px solid #1f6feb;
+    border-radius: 10px;
+    padding: 22px 28px;
+    margin-bottom: 40px;
+    font-size: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .toc h4 {
+    margin: 0 0 16px;
+    font-size: 15px;
+    color: #f0f6fc;
+    letter-spacing: 0.03em;
+  }
+  .toc ol {
+    margin-left: 0;
+    padding-left: 0;
+    counter-reset: toc-counter;
+    list-style: none;
+  }
+  .toc li {
+    counter-increment: toc-counter;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    transition: background 0.15s;
+  }
+  .toc li:hover { background: #21262d; }
+  .toc li::before {
+    content: counter(toc-counter);
+    min-width: 22px;
+    height: 22px;
+    background: #1f6feb;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .toc a {
+    color: #c9d1d9;
+    transition: color 0.15s;
+  }
+  .toc a:hover { color: #58a6ff; text-decoration: none; }
+
+
+  .hero-actions {
+    text-align: center;
+    margin: 24px 0 36px;
+  }
+
+  .play-button {
+    display: inline-block;
+    background: #1f6feb;
+    color: #ffffff;
+    border: 1px solid #388bfd;
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(31, 111, 235, 0.25);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+
+  .play-button:hover {
+    background: #388bfd;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px rgba(56, 139, 253, 0.28);
+  }
+
+  .image-frame {
+    margin: 18px 0 22px;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  .image-frame img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+  }
+
+  .image-caption {
+    margin-top: 10px;
+    color: #8b949e;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  .footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid #21262d;
+    text-align: center;
+    font-size: 13px;
+    color: #8b949e;
+    line-height: 1.9;
+  }
+
+  /* Code Runner Styles */
+  .code-runner-container {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    margin: 24px 0;
+    overflow: hidden;
+  }
+
+  .challenge-box {
+    background: #0d1f38;
+    border-bottom: 1px solid #30363d;
+    padding: 14px 18px;
+  }
+
+  .challenge-box h3 {
+    color: #f0f6fc;
+    margin-bottom: 6px;
+    font-size: 16px;
+  }
+
+  .challenge-box p {
+    color: #c9d1d9;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .editor-container, .output-container {
+    background: #161b22;
+  }
+
+  .control-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #0d1117;
+    border-bottom: 1px solid #30363d;
+  }
+
+  .control-panel button {
+    background: #1f6feb;
+    color: #fff;
+    border: 1px solid #388bfd;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .control-panel button:hover {
+    background: #388bfd;
+  }
+
+  .control-panel select {
+    background: #161b22;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .editor-textarea {
+    width: 100%;
+    min-height: 220px;
+    border: none;
+    background: #161b22;
+    color: #e6edf3;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .output-content {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    margin: 12px;
+    padding: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #e6edf3;
+    min-height: 76px;
+    max-height: 280px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .lineCount, .charCount, .execTime {
+    color: #8b949e;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Back nav -->
+  <div style="margin-bottom:28px;">
+    <a href="/CollegeReadyBlog.html" style="color:#58a6ff;font-size:14px;">← College Ready Blog</a>
+    &nbsp;&nbsp;
+    <a href="/" style="color:#8b949e;font-size:14px;">Home</a>
+  </div>
+
+  <h2 id="coding-practices">🛠️ Coding Practices &amp; SDLC</h2>
+
+  <p>
+    This blog was developed following an iterative sprint-based process that mirrors industry SDLC practices. Code quality, documentation, and version control were maintained throughout each sprint.
+  </p>
+
+  <div class="callout callout-blue">
+    <strong>Sprint-based development:</strong> The Peppa Pig Fight Club game was built across Sprint 6, with incremental commits to GitHub, peer code reviews, and iterative playtesting to identify and fix bugs before each release.
+  </div>
+
+  <h3>Key Coding Practices Applied</h3>
+  <ul>
+    <li><strong>Separation of concerns:</strong> game logic (<code>PeppaBattleLevelBase</code>), entity behavior (<code>PeppaBossEnemy</code>), and configuration (level data objects) are kept in separate classes.</li>
+    <li><strong>DRY (Don't Repeat Yourself):</strong> shared laser logic, HUD rendering, and collision detection live in the base class so all three levels inherit them without duplication.</li>
+    <li><strong>Defensive programming:</strong> optional chaining (<code>?.</code>) and nullish coalescing (<code>??</code>) guard against null/undefined config values that would crash the level.</li>
+    <li><strong>Cleanup in destroy():</strong> event listeners are removed and timers cleared when a level ends, preventing memory leaks in long gameplay sessions.</li>
+    <li><strong>Console logging strategy:</strong> every state-changing operation logs a prefixed message (<code>[Boss]</code>, <code>[Hitbox]</code>, <code>[Leaderboard]</code>) to make runtime debugging fast and readable.</li>
+  </ul>
+
+  <h3>SDLC — Software Development Life Cycle</h3>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Phase</th><th>What Was Done</th></tr>
+      <tr>
+        <td><strong>Planning</strong></td>
+        <td>Defined the 3-level boss fight structure, identified required classes, and mapped rubric requirements to specific code features before writing any game logic.</td>
+      </tr>
+      <tr>
+        <td><strong>Design</strong></td>
+        <td>Sketched the class hierarchy (GameObject → Enemy → PeppaBossEnemy, PeppaBattleLevelBase → PeppaLevel1/2/3), designed the laser data structure, and decided on the AABB collision algorithm.</td>
+      </tr>
+      <tr>
+        <td><strong>Implementation</strong></td>
+        <td>Built classes incrementally — boss constructor first, then movement, then damage system, then laser spawning, then HUD, then win/lose conditions. Each feature was committed separately.</td>
+      </tr>
+      <tr>
+        <td><strong>Testing</strong></td>
+        <td>Play-tested each level end-to-end, used DevTools console + hitbox visualizer to debug collision issues, and verified the leaderboard API with Network tab monitoring.</td>
+      </tr>
+      <tr>
+        <td><strong>Deployment</strong></td>
+        <td>Published via GitHub Pages through the OCS GameEngine pipeline. Each sprint push triggered automatic deployment to the live student site.</td>
+      </tr>
+      <tr>
+        <td><strong>Maintenance</strong></td>
+        <td>Fixed hitbox sizing after playtesting, tuned boss speeds per level, and adjusted the invulnerability window from 200ms to 300ms based on gameplay feel.</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    Built with JavaScript, Canvas API, and the OCS GameEngine<br>
+    CSSE Final Project — Sprint 6 · Aadi Saini · Mar 23, 2026
+  </div>
+
+</div>
+</body>
+</html>
