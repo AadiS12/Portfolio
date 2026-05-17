@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operators — College Ready Blog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/darcula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d1117; color: #e6edf3; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; }
+  a { color: #58a6ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .page { max-width: 800px; margin: 0 auto; padding: 60px 24px 100px; }
+  h1.title { text-align: center; font-size: 34px; font-weight: 700; color: #f0f6fc; margin-bottom: 14px; line-height: 1.2; }
+  .subtitle { text-align: center; color: #8b949e; font-size: 15px; max-width: 620px; margin: 0 auto 48px; line-height: 1.6; }
+  hr { border: none; border-top: 1px solid #21262d; margin: 44px 0; }
+  h2 { font-size: 22px; font-weight: 700; color: #f0f6fc; margin: 44px 0 14px; padding-bottom: 8px; border-bottom: 1px solid #21262d; }
+  h3 { font-size: 17px; font-weight: 600; color: #e6edf3; margin: 28px 0 10px; }
+  h4 { font-size: 13px; font-weight: 600; color: #8b949e; text-transform: uppercase; letter-spacing: 0.07em; margin: 22px 0 8px; }
+  p { margin-bottom: 14px; color: #c9d1d9; font-size: 15px; }
+  ul { margin: 0 0 16px 20px; }
+  ul li { color: #c9d1d9; font-size: 15px; margin-bottom: 4px; }
+  .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: #161b22; color: #8b949e; font-weight: 600; text-align: left; padding: 9px 14px; border: 1px solid #30363d; font-size: 13px; }
+  td { padding: 9px 14px; border: 1px solid #21262d; color: #c9d1d9; background: #0d1117; vertical-align: top; font-size: 14px; }
+  tr:hover td { background: #161b22; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; background: #161b22; color: #79c0ff; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d; }
+  pre { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.7; }
+  pre code { background: none; border: none; padding: 0; color: #e6edf3; }
+  .kw   { color: #ff7b72; }
+  .fn   { color: #d2a8ff; }
+  .str  { color: #a5d6ff; }
+  .num  { color: #f2cc60; }
+  .cm   { color: #8b949e; font-style: italic; }
+  .cls  { color: #ffa657; }
+  .bool { color: #79c0ff; }
+  .annotation { background: #0d1f38; border-left: 3px solid #388bfd; border-radius: 0 6px 6px 0; padding: 12px 16px; margin-bottom: 24px; font-size: 13.5px; color: #8b949e; line-height: 1.6; }
+  .annotation strong { color: #c9d1d9; }
+  .toc { background: linear-gradient(135deg, #161b22 0%, #0d1117 100%); border: 1px solid #30363d; border-top: 3px solid #e67e22; border-radius: 10px; padding: 22px 28px; margin-bottom: 40px; font-size: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+  .toc h4 { margin: 0 0 16px; font-size: 15px; color: #f0f6fc; letter-spacing: 0.03em; }
+  .toc ol { margin-left: 0; padding-left: 0; counter-reset: toc-counter; list-style: none; }
+  .toc li { counter-increment: toc-counter; margin-bottom: 0; display: flex; align-items: center; gap: 10px; padding: 5px 8px; border-radius: 5px; transition: background 0.15s; }
+  .toc li:hover { background: #21262d; }
+  .toc li::before { content: counter(toc-counter); min-width: 22px; height: 22px; background: #e67e22; color: #fff; border-radius: 50%; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .toc a { color: #c9d1d9; transition: color 0.15s; }
+  .toc a:hover { color: #58a6ff; text-decoration: none; }
+  .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid #21262d; text-align: center; font-size: 13px; color: #8b949e; line-height: 1.9; }
+  .code-runner-container { background: #161b22; border: 1px solid #30363d; border-radius: 8px; margin: 24px 0; overflow: hidden; }
+  .challenge-box { background: #0d1f38; border-bottom: 1px solid #30363d; padding: 14px 18px; }
+  .challenge-box h3 { color: #f0f6fc; margin-bottom: 6px; font-size: 16px; }
+  .challenge-box p { color: #c9d1d9; font-size: 14px; margin: 0; }
+  .editor-container, .output-container { background: #161b22; }
+  .control-panel { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #0d1117; border-bottom: 1px solid #30363d; }
+  .control-panel button { background: #1f6feb; color: #fff; border: 1px solid #388bfd; border-radius: 6px; padding: 5px 10px; font-size: 13px; cursor: pointer; }
+  .control-panel button:hover { background: #388bfd; }
+  .editor-textarea { width: 100%; min-height: 220px; border: none; background: #161b22; color: #e6edf3; font-family: 'JetBrains Mono', monospace; font-size: 14px; padding: 12px; }
+  .output-content { background: #161b22; border: 1px solid #30363d; border-radius: 6px; margin: 12px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #e6edf3; min-height: 76px; max-height: 280px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; }
+  .execTime { color: #8b949e; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Back nav -->
+  <div style="margin-bottom:28px;">
+    <a href="/" style="color:#58a6ff;font-size:14px;">← Home</a>
+    &nbsp;&nbsp;
+    <a href="/CollegeReadyBlog.html" style="color:#8b949e;font-size:14px;">Full Blog</a>
+  </div>
+
+  <h1 class="title">Operators</h1>
+  <p class="subtitle">Mathematical · String Operations · Boolean Expressions</p>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h4>📋 Table of Contents</h4>
+    <ol>
+      <li><a href="#mathematical">Mathematical</a></li>
+      <li><a href="#string-operations">String Operations</a></li>
+      <li><a href="#boolean-expressions">Boolean Expressions</a></li>
+    </ol>
+  </div>
+
+  <p>
+    Operators are the actual computations that run every frame to produce the game's behavior. The boss physically moves because of <code>+= (dx/distance) * moveSpeed</code>. The laser system works because of vector math. The fight logic branches because of boolean comparisons.
+  </p>
+
+  <!-- MATHEMATICAL -->
+  <h2 id="mathematical">➕ Mathematical</h2>
+  <p>
+    Every frame, mathematical operators update positions, calculate distances, and clamp values. The boss's chase AI is entirely arithmetic — subtract centers, divide by distance, multiply by speed.
+  </p>
+
+  <h3>Physics calculations — gravity, velocity, collision</h3>
+  <pre><code><span class="cm">// Boss movement — normalize direction vector, scale by speed</span>
+<span class="kw">const</span> dx = (target.position.x + target.width  / <span class="num">2</span>) - myCenterX;  <span class="cm">// -</span>
+<span class="kw">const</span> dy = (target.position.y + target.height / <span class="num">2</span>) - myCenterY;  <span class="cm">// -</span>
+<span class="kw">const</span> distance = Math.<span class="fn">hypot</span>(dx, dy);   <span class="cm">// √(dx² + dy²)</span>
+
+<span class="kw">this</span>.position.x += (dx / distance) * <span class="kw">this</span>.moveSpeed;  <span class="cm">// / * +=</span>
+<span class="kw">this</span>.position.y += (dy / distance) * <span class="kw">this</span>.moveSpeed;  <span class="cm">// / * +=</span>
+
+<span class="cm">// Laser position update each frame (+= velocity)</span>
+L.x += L.vx;   <span class="cm">// +=</span>
+L.y += L.vy;   <span class="cm">// +=</span>
+L.life -= <span class="num">1</span>;   <span class="cm">// -=</span>
+
+<span class="cm">// Math.max() prevents health from going negative</span>
+<span class="kw">this</span>.health = Math.<span class="fn">max</span>(<span class="num">0</span>, <span class="kw">this</span>.health - amount);  <span class="cm">// - inside max()</span>
+
+<span class="cm">// Score calculation — time bonus + HP bonus</span>
+<span class="kw">const</span> score = baseScore + (timeRemaining * <span class="num">10</span>) + (playerHealth * <span class="num">25</span>);  <span class="cm">// + *</span></code></pre>
+  <div class="annotation">
+    <code>Math.hypot(dx, dy)</code> calculates the straight-line distance. Dividing by it <strong>normalizes</strong> the direction to length 1, so the boss always moves exactly <code>moveSpeed</code> pixels per frame regardless of distance.
+  </div>
+
+  <div class="code-runner-container" id="runner-math" data-storage-key="cs111-math">
+    <div class="challenge-box">
+      <h3>Try It — Mathematical Operators</h3>
+      <p>Run this to see the boss chase math. Try moving the player position and see how velocity changes.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">const bossX = 300, bossY = 200;
+const playerX = 100, playerY = 150;
+const moveSpeed = 0.8;
+
+const dx = playerX - bossX;
+const dy = playerY - bossY;
+const distance = Math.hypot(dx, dy) || 1;  // || 1 prevents divide-by-zero
+
+const velX = (dx / distance) * moveSpeed;
+const velY = (dy / distance) * moveSpeed;
+
+console.log('Distance to player:', distance.toFixed(1));
+console.log('Velocity:', velX.toFixed(3), velY.toFixed(3));
+console.log('New boss position:', (bossX + velX).toFixed(1), (bossY + velY).toFixed(1));
+
+// Math.max prevents HP going below 0
+let health = 3;
+health = Math.max(0, health - 5);
+console.log('Health after overkill:', health);</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- STRING OPERATIONS -->
+  <h2 id="string-operations">🔤 String Operations</h2>
+  <p>
+    String operators build file paths, construct console messages, and create the CSS values that control visual effects. Template literals are the primary tool — they concatenate strings and variable values in one readable expression.
+  </p>
+
+  <h3>Path concatenation, text display</h3>
+  <pre><code><span class="cm">// Template literals — build asset paths dynamically</span>
+src: <span class="str">`${path}/images/gamify/${config.enemyImage}`</span>
+
+<span class="cm">// String concatenation in HUD messages</span>
+hudText = <span class="str">`${config.enemyName} — HP: ${boss.health}/${boss.maxHealth}`</span>;
+
+<span class="cm">// Template literal for console debug output</span>
+console.<span class="fn">log</span>(<span class="str">`[Boss] Hit! HP: ${<span class="kw">this</span>.health}/${<span class="kw">this</span>.maxHealth}`</span>);
+console.<span class="fn">log</span>(<span class="str">`[Hitbox] pos=(${Math.round(<span class="kw">this</span>.position.x)},${Math.round(<span class="kw">this</span>.position.y)})`</span>);
+
+<span class="cm">// String used as CSS filter value</span>
+<span class="kw">this</span>.canvas.style.filter = <span class="str">'grayscale(1) brightness(0.8)'</span>;
+
+<span class="cm">// encodeURIComponent() — string operation for API URL building</span>
+<span class="kw">const</span> url = <span class="str">`https://itunes.apple.com/search?term=${<span class="fn">encodeURIComponent</span>(searchTerm)}&entity=song`</span>;</code></pre>
+  <div class="annotation">
+    Template literals (<code>`${}`</code>) are cleaner than <code>'text' + variable + 'text'</code>. The asset path template is especially important — one wrong character and the sprite fails to load.
+  </div>
+
+  <div class="code-runner-container" id="runner-string-ops" data-storage-key="cs111-string-ops">
+    <div class="challenge-box">
+      <h3>Try It — String Operations</h3>
+      <p>Run this to see template literals and string operations. Try changing the enemy name and image.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">const enemyName = 'Daddy Pig';
+const enemyImage = 'daddy-pig.png';
+const path = '/images/gamify';
+
+// Template literal — builds the full asset path
+const src = `${path}/${enemyImage}`;
+console.log('Sprite path:', src);
+
+// HUD string
+const hp = 8, maxHp = 12;
+const hud = `${enemyName} — HP: ${hp}/${maxHp}`;
+console.log('HUD:', hud);
+
+// encodeURIComponent for API URL
+const term = 'every breath you take';
+const url = `https://itunes.apple.com/search?term=${encodeURIComponent(term)}`;
+console.log('API URL:', url);</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- BOOLEAN EXPRESSIONS -->
+  <h2 id="boolean-expressions">🔀 Boolean Expressions</h2>
+  <p>
+    Boolean expressions combine comparison operators (<code>===</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>) with logical operators (<code>&amp;&amp;</code>, <code>||</code>, <code>!</code>) to create compound conditions. The AABB collision check is the most complex: four comparisons joined by <code>&amp;&amp;</code> to detect rectangle overlap.
+  </p>
+
+  <h3>Compound conditions in game logic</h3>
+  <pre><code><span class="cm">// AABB collision — all FOUR conditions must be true simultaneously with &&</span>
+<span class="kw">if</span> (hitLeft              &lt;  boss.position.x + boss.width  &&   <span class="cm">// left edge</span>
+    hitLeft + hitW        &gt;  boss.position.x               &&   <span class="cm">// right edge</span>
+    hitTop               &lt;  boss.position.y + boss.height  &&   <span class="cm">// top edge</span>
+    hitTop  + hitH        &gt;  boss.position.y) {                  <span class="cm">// bottom edge</span>
+  boss.<span class="fn">takeDamage</span>(<span class="num">1</span>);
+  <span class="kw">this</span>.lasers.<span class="fn">splice</span>(i, <span class="num">1</span>);
+}
+
+<span class="cm">// || — fallback value, prevents divide-by-zero</span>
+<span class="kw">const</span> len = Math.<span class="fn">hypot</span>(dx, dy) || <span class="num">1</span>;
+
+<span class="cm">// ! — invert boolean flag to check "not defeated"</span>
+<span class="kw">if</span> (!boss.isDefeated && now - <span class="kw">this</span>.lastAttackAt >= cooldown) {
+  <span class="kw">this</span>.<span class="fn">spawnLaser</span>();
+}
+
+<span class="cm">// === comparison for exact equality checks</span>
+<span class="kw">if</span> (<span class="kw">this</span>.health === <span class="num">0</span>) { <span class="kw">this</span>.isDefeated = <span class="bool">true</span>; }
+<span class="kw">if</span> (event.code === <span class="str">'Space'</span>) { <span class="kw">this</span>.attackRequested = <span class="bool">true</span>; }</code></pre>
+  <div class="annotation">
+    The AABB check uses four <code>&amp;&amp;</code> conditions because <strong>all four</strong> must be true for a collision. If the laser flew past the right side of the boss, condition 2 fails and <code>&amp;&amp;</code> short-circuits — the rest aren't checked and no damage is dealt. <code>|| 1</code> is a defensive boolean expression: if <code>Math.hypot</code> returns 0 (player and boss are perfectly overlapping), dividing by zero would produce <code>Infinity</code> for velocity, which would break movement. The <code>|| 1</code> falls back to 1 to prevent that.
+  </div>
+
+  <h3>Summary table — operators in context</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Operator Type</th><th>Operators</th><th>Where Used in the Game</th></tr>
+      <tr>
+        <td>Mathematical</td>
+        <td><code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>Math.hypot()</code> <code>Math.max()</code></td>
+        <td>Boss chase movement, laser velocity, health clamping, score calculation</td>
+      </tr>
+      <tr>
+        <td>String Operations</td>
+        <td>Template literals <code>`${}`</code>, <code>encodeURIComponent()</code></td>
+        <td>Asset paths, HUD text, console logs, API URL building</td>
+      </tr>
+      <tr>
+        <td>Boolean Expressions</td>
+        <td><code>&amp;&amp;</code> <code>||</code> <code>!</code> <code>===</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code></td>
+        <td>Collision detection, win/lose conditions, cooldown checks, attack gating</td>
+      </tr>
+      <tr>
+        <td>Assignment</td>
+        <td><code>=</code> <code>+=</code> <code>-=</code></td>
+        <td>Position updates every frame, health changes, timestamp resets</td>
+      </tr>
+      <tr>
+        <td>Nullish / Optional</td>
+        <td><code>??</code> <code>?.</code></td>
+        <td>Safe config reading — prevents crash if data properties are missing</td>
+      </tr>
+    </table>
+  </div>
+
+  <h4>📚 Related Homework: Mathematical Expressions</h4>
+  <p><strong><a href="https://aadis12.github.io/student/MathmaticalExpressionsHomework/">Mathematical Expressions Homework</a></strong> — Shows understanding of mathematical operations used in position calculations, collision detection, and score computations.</p>
+
+  <hr>
+
+  <!-- CODE RUNNER -->
+  <h2>▶ Operators Practice</h2>
+  <p>Run the code below to see all three operator types in action — vector math for boss movement, a template literal HUD string, and a boolean AABB collision check.</p>
+
+  <div class="code-runner-container">
+    <div class="challenge-box">
+      <h3>Operators Practice</h3>
+      <p>Modify values and run to see how operators change game behavior. Try changing <code>moveSpeed</code>, the player/boss positions, or the laser hitbox dimensions.</p>
+    </div>
+    <div class="control-panel">
+      <button onclick="runOperators()">▶ Run</button>
+      <button onclick="clearOperatorsOutput()">✕ Clear</button>
+      <span class="execTime" id="operators-time"></span>
+    </div>
+    <div class="editor-container">
+      <textarea id="operators-editor">// --- MATHEMATICAL OPERATORS ---
+const bossX = 300, bossY = 200, bossW = 64, bossH = 64;
+const playerX = 100, playerY = 150, playerW = 32, playerH = 32;
+const moveSpeed = 0.8;
+
+// Normalize direction vector (boss chases player)
+const myCenterX = bossX + bossW / 2;
+const myCenterY = bossY + bossH / 2;
+const dx = (playerX + playerW / 2) - myCenterX;
+const dy = (playerY + playerH / 2) - myCenterY;
+const distance = Math.hypot(dx, dy) || 1;  // || 1 prevents divide-by-zero
+
+const velX = (dx / distance) * moveSpeed;
+const velY = (dy / distance) * moveSpeed;
+console.log(`[Math] distance=${distance.toFixed(1)}, vel=(${velX.toFixed(3)}, ${velY.toFixed(3)})`);
+
+// Health clamping — Math.max prevents going below 0
+let health = 3;
+health = Math.max(0, health - 5);
+console.log(`[Math] health after -5 damage = ${health}`);  // 0, not -2
+
+// --- STRING OPERATORS ---
+const enemyName = 'George Pig';
+const enemyHP = 3, enemyMaxHP = 3;
+const hudText = `${enemyName} — HP: ${enemyHP}/${enemyMaxHP}`;
+console.log(`[String] HUD: "${hudText}"`);
+
+const enemyImage = 'georgie-pig.png';
+const assetPath = `/images/gamify/${enemyImage}`;
+console.log(`[String] Asset path: "${assetPath}"`);
+
+// --- BOOLEAN EXPRESSIONS ---
+// Laser hitbox vs boss hitbox — AABB collision
+const lx = 280, ly = 210, lw = 8, lh = 8;  // laser position/size
+const collision = (
+  lx          < bossX + bossW &&   // laser left < boss right
+  lx + lw     > bossX         &&   // laser right > boss left
+  ly          < bossY + bossH  &&   // laser top < boss bottom
+  ly + lh     > bossY              // laser bottom > boss top
+);
+console.log(`[Bool] Laser hits boss: ${collision}`);
+
+const isDefeated = false;
+const now = Date.now();
+const lastAttackAt = now - 600;
+const cooldown = 500;
+const canAttack = !isDefeated && (now - lastAttackAt >= cooldown);
+console.log(`[Bool] Can attack: ${canAttack}`);</textarea>
+    </div>
+    <div class="output-container">
+      <div class="output-content" id="operators-output">Output will appear here...</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Built with JavaScript, Canvas API, and the OCS GameEngine<br>
+    CSSE Final Project — Sprint 6 · Aadi Saini · Mar 23, 2026
+  </div>
+
+</div>
+
+<script>
+  const operatorsEditor = CodeMirror.fromTextArea(document.getElementById('operators-editor'), {
+    mode: 'javascript', theme: 'darcula', lineNumbers: true,
+    indentUnit: 2, tabSize: 2, lineWrapping: true
+  });
+
+  function runOperators() {
+    const code = operatorsEditor.getValue();
+    const out = document.getElementById('operators-output');
+    const timeEl = document.getElementById('operators-time');
+    const logs = [];
+    const origLog = console.log;
+    console.log = (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' '));
+    const t0 = performance.now();
+    try { eval(code); } catch(e) { logs.push('Error: ' + e.message); }
+    const ms = (performance.now() - t0).toFixed(2);
+    console.log = origLog;
+    out.textContent = logs.join('\n') || '(no output)';
+    timeEl.textContent = `${ms}ms`;
+  }
+
+  function clearOperatorsOutput() {
+    document.getElementById('operators-output').textContent = 'Output will appear here...';
+    document.getElementById('operators-time').textContent = '';
+  }
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>I/O &amp; API Integration — College Ready Blog</title>
+<title>Input/Output — College Ready Blog</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/darcula.min.css">
@@ -420,15 +420,30 @@
 
   <!-- Back nav -->
   <div style="margin-bottom:28px;">
-    <a href="/CollegeReadyBlog.html" style="color:#58a6ff;font-size:14px;">← College Ready Blog</a>
+    <a href="/" style="color:#58a6ff;font-size:14px;">← Home</a>
     &nbsp;&nbsp;
-    <a href="/" style="color:#8b949e;font-size:14px;">Home</a>
+    <a href="/CollegeReadyBlog.html" style="color:#8b949e;font-size:14px;">Full Blog</a>
   </div>
 
-  <!-- SECTION 7: I/O -->
-  <h2 id="io">⌨️ Input / Output</h2>
+  <h1 class="title">Input/Output</h1>
+  <p class="subtitle">Keyboard Input · Canvas Rendering · GameEnv Configuration · API Integration · Asynchronous I/O · JSON Parsing</p>
 
-  <h3>Keyboard Input — Event Listeners</h3>
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h4>📋 Table of Contents</h4>
+    <ol>
+      <li><a href="#keyboard-input">Keyboard Input</a></li>
+      <li><a href="#canvas-rendering">Canvas Rendering</a></li>
+      <li><a href="#gameenv-config">GameEnv Configuration</a></li>
+      <li><a href="#api">API Integration</a></li>
+      <li><a href="#async-io">Asynchronous I/O</a></li>
+      <li><a href="#json-parsing">JSON Parsing</a></li>
+    </ol>
+  </div>
+
+  <h2 id="keyboard-input">⌨️ Keyboard Input</h2>
+
+  <h3>Event Listeners</h3>
   <p>
     Keyboard events are captured with <code>addEventListener</code> on the document. The SPACE key triggers laser attacks; WASD is handled by the engine's <code>Player</code> class.
   </p>
@@ -490,7 +505,8 @@ tryAttack(1200);</textarea>
     <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click "Run" in code control panel to see output ...</div></div>
   </div>
 
-  <h3>Canvas Rendering — draw() via GameEngine</h3>
+  <h2 id="canvas-rendering">🖼️ Canvas Rendering</h2>
+  <h3>draw() via GameEngine</h3>
   <p>
     All characters are drawn to the HTML5 Canvas each frame. The <code>draw()</code> method is inherited from <code>GameObject</code> and called inside the overridden <code>update()</code>. The hitbox overlay uses the Canvas 2D context directly.
   </p>
@@ -504,7 +520,47 @@ tryAttack(1200);</textarea>
 <span class="kw">const</span> ctx = <span class="kw">this</span>.gameEnv?.ctx;
 ctx.<span class="fn">strokeRect</span>(<span class="kw">this</span>.position.x, <span class="kw">this</span>.position.y, <span class="kw">this</span>.width, <span class="kw">this</span>.height);</code></pre>
 
-  <h3>GameEnv Configuration</h3>
+  <div class="code-runner-container" id="runner-canvas" data-storage-key="cs111-canvas">
+    <div class="challenge-box">
+      <h3>Try It — Canvas Rendering</h3>
+      <p>Canvas API methods can't run in a code runner (no DOM), but this simulates the draw call sequence so you can see what happens each frame.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">// Simulate what happens each frame
+const mockCtx = {
+  calls: [],
+  save()                     { this.calls.push('save()'); },
+  restore()                  { this.calls.push('restore()'); },
+  strokeRect(x, y, w, h)    { this.calls.push(`strokeRect(${x}, ${y}, ${w}, ${h})`); },
+  fillRect(x, y, w, h)      { this.calls.push(`fillRect(${x}, ${y}, ${w}, ${h})`); }
+};
+
+const pos = { x: 300, y: 150 };
+const w = 29, h = 38;  // hitbox size
+
+// drawHitbox() sequence
+mockCtx.save();
+mockCtx.strokeRect(pos.x, pos.y, w, h);  // red outline
+mockCtx.fillRect(pos.x, pos.y, w, h);    // faint fill
+mockCtx.restore();
+
+console.log('Canvas draw calls this frame:');
+mockCtx.calls.forEach(c => console.log(' ', c));</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
+  </div>
+
+  <h2 id="gameenv-config">⚙️ GameEnv Configuration</h2>
+  <h3>Canvas Size, Level Classes &amp; Server URIs</h3>
   <p>
     The game environment is initialized in the main entry file. Canvas size, level classes, and server URIs are all passed in via the <code>environment</code> object.
   </p>
@@ -521,10 +577,43 @@ ctx.<span class="fn">strokeRect</span>(<span class="kw">this</span>.position.x, 
 
 Game.<span class="fn">main</span>(environment);   <span class="cm">// launches the game loop</span></code></pre>
 
+  <div class="code-runner-container" id="runner-gameenv" data-storage-key="cs111-gameenv">
+    <div class="challenge-box">
+      <h3>Try It — GameEnv Configuration</h3>
+      <p>Run this to see how the config object drives the game. Try reordering <code>levelClasses</code> to change the level sequence.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">// Simulate the environment config object
+const environment = {
+  path: '/assets',
+  serverURI: 'https://flask.nighthawkcodingsociety.com',
+  gameLevelClasses: ['PeppaLevel1', 'PeppaLevel2', 'PeppaLevel3']
+};
+
+console.log('Asset path:', environment.path);
+console.log('Server:', environment.serverURI);
+console.log('Level order:', environment.gameLevelClasses.join(' → '));
+
+// The engine reads gameLevelClasses to know which levels to load
+environment.gameLevelClasses.forEach((level, i) => {
+  console.log('Level ' + (i + 1) + ':', level);
+});</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
+  </div>
+
   <hr>
 
-  <!-- SECTION 8: API -->
-  <h2 id="api">🌐 API Integration — iTunes Music API &amp; Async I/O</h2>
+  <h2 id="api">🌐 API Integration</h2>
   <p>
     An API (Application Programming Interface) is a way for your code to talk to an external service over the internet. You send a request, the service sends back data — usually as JSON. In the game, this same pattern is used to save scores and fetch leaderboard data. To show how APIs work in a fun way, I used the public <strong>iTunes Search API</strong> to search for songs and play previews directly in the browser.
   </p>
@@ -551,6 +640,47 @@ audio.<span class="fn">play</span>();
 
 console.<span class="fn">log</span>(<span class="str">`Now playing: ${track.trackName} by ${track.artistName}`</span>);</code></pre>
 
+  <div class="code-runner-container" id="runner-api-integration" data-storage-key="cs111-api-integration">
+    <div class="challenge-box">
+      <h3>Try It — API Integration</h3>
+      <p>This simulates the iTunes API response so you can see how the data looks and how to read it. The real version uses <code>fetch()</code>.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">// Simulated iTunes API response (what the real API sends back)
+const mockResponse = {
+  resultCount: 1,
+  results: [{
+    trackName: 'Every Breath You Take',
+    artistName: 'The Police',
+    previewUrl: 'https://audio-ssl.itunes.apple.com/preview.m4a',
+    artworkUrl100: 'https://is1-ssl.mzstatic.com/image/thumb/...'
+  }]
+};
+
+// Read the first result — same as what fetch() returns
+const track = mockResponse.results[0];
+console.log('Track:', track.trackName);
+console.log('Artist:', track.artistName);
+console.log('Preview URL exists:', !!track.previewUrl);
+
+// Build the real request URL
+const term = 'every breath you take police';
+const url = `https://itunes.apple.com/search?term=${encodeURIComponent(term)}&entity=song&limit=1`;
+console.log('\nReal request URL:', url);</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
+  </div>
+
+  <h2 id="async-io">⏳ Asynchronous I/O</h2>
   <h3>Full fetchAndPlay() — async/await + error handling</h3>
   <pre><code><span class="cm">/**
  * Searches the iTunes API for a song and plays the preview.
@@ -581,11 +711,101 @@ console.<span class="fn">log</span>(<span class="str">`Now playing: ${track.trac
 
 <span class="fn">fetchAndPlay</span>(<span class="str">'every breath you take police'</span>);</code></pre>
   <div class="annotation">
-    This uses the same <strong>async/await + try/catch + JSON parsing</strong> pattern as the game's leaderboard API. The only difference is the endpoint. <strong>Object destructuring</strong> (<code>{ trackName, artistName, previewUrl }</code>) pulls exactly the fields we need from the response object.
+    Same pattern as the leaderboard API — just a different endpoint. <code>await</code> pauses until the response arrives. Destructuring <code>{ trackName, artistName, previewUrl }</code> pulls only what's needed.
   </div>
 
+  <div class="code-runner-container" id="runner-async" data-storage-key="cs111-async">
+    <div class="challenge-box">
+      <h3>Try It — Async/Await</h3>
+      <p>Run this to see <code>async/await</code> with a simulated API call. The <code>await</code> pauses execution until the Promise resolves.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">// Simulated fetch — returns a Promise like the real fetch() does
+function fakeApi(term) {
+  return Promise.resolve({
+    results: [{ trackName: 'Every Breath You Take', artistName: 'The Police', previewUrl: 'https://example.com/preview.m4a' }]
+  });
+}
+
+async function fetchAndPlay(searchTerm) {
+  try {
+    const data = await fakeApi(searchTerm);  // await pauses here until resolved
+    const { trackName, artistName, previewUrl } = data.results[0];  // destructure
+    if (!previewUrl) throw new Error('No preview available');
+    console.log('Playing: ' + trackName + ' — ' + artistName);
+  } catch (error) {
+    console.log('Error: ' + error.message);
+  }
+}
+
+fetchAndPlay('every breath you take');
+console.log('This line runs before fetchAndPlay finishes (async)');</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
+  </div>
+
+  <h2 id="json-parsing">📦 JSON Parsing</h2>
   <h3>Connection to the Game</h3>
   <p>The game's <code>PeppaMusic</code> class uses this exact same pattern — it calls the iTunes API to fetch background music previews and plays them during gameplay. The same <code>fetch()</code> → <code>await response.json()</code> → extract field → play flow powers both the leaderboard and the in-game music.</p>
+
+  <h3>JSON Parsing — Extracting API Response Data</h3>
+  <pre><code><span class="cm">// Parsing the iTunes API JSON response</span>
+<span class="kw">const</span> data = <span class="kw">await</span> response.<span class="fn">json</span>();          <span class="cm">// JSON.parse() equivalent</span>
+
+<span class="cm">// Object destructuring — pull only the fields we need</span>
+<span class="kw">const</span> { trackName, artistName, previewUrl } = data.results[<span class="num">0</span>];
+
+<span class="cm">// Leaderboard response parsing</span>
+<span class="kw">const</span> scores = <span class="kw">await</span> response.<span class="fn">json</span>();         <span class="cm">// Array of score objects</span>
+scores.<span class="fn">forEach</span>(({ player, score, date }) => {
+  console.<span class="fn">log</span>(<span class="str">`${player}: ${score} on ${date}`</span>);  <span class="cm">// destructuring + template literal</span>
+});</code></pre>
+  <div class="annotation">
+    <code>response.json()</code> calls <code>JSON.parse()</code> automatically — it turns the raw text the API sends into a JavaScript object you can read. Destructuring pulls out only the fields you need.
+  </div>
+
+  <div class="code-runner-container" id="runner-json" data-storage-key="cs111-json">
+    <div class="challenge-box">
+      <h3>Try It — JSON Parsing</h3>
+      <p>Run this to see <code>JSON.parse()</code> and object destructuring. Try adding a new field to the JSON string and reading it.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">// Raw JSON string — this is what the API actually sends over the internet
+const rawJSON = '{"results":[{"trackName":"Every Breath You Take","artistName":"The Police"},{"trackName":"Roxanne","artistName":"The Police"}]}';
+
+// JSON.parse() turns it into a real JavaScript object
+const data = JSON.parse(rawJSON);
+console.log('Number of results:', data.results.length);
+
+// Object destructuring — pull just the fields we need
+const { trackName, artistName } = data.results[0];
+console.log('First track:', trackName, 'by', artistName);
+
+// Loop over leaderboard-style results
+data.results.forEach(({ trackName, artistName }) => {
+  console.log(' -', trackName, '—', artistName);
+});</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
+  </div>
 
   <!-- iTunes Live Demo -->
   <div style="background:#161b22;border:1px solid #30363d;border-top:3px solid #1f6feb;border-radius:10px;padding:22px 28px;margin:28px 0 0;">

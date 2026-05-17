@@ -43,6 +43,26 @@ Hi! My name is [Your Full Name]
             Turtle
         </div>
     </a>
+    <a href="/peppa-pig/" style="text-decoration: none;">
+        <div style="background-color: #238636; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;">
+            ▶ Peppa Pig Game
+        </div>
+    </a>
+    <a href="https://rashig-1804.github.io/csse_teamrepo/hacks/TicTacToe/" style="text-decoration: none;">
+        <div style="background-color: #9b59b6; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;">
+            Tic-Tac-Toe
+        </div>
+    </a>
+    <a href="https://rashig-1804.github.io/csse_teamrepo/connect4/" style="text-decoration: none;">
+        <div style="background-color: #e67e22; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;">
+            Connect 4
+        </div>
+    </a>
+    <a href="https://aadis12.github.io/student/hacks/whackamole" style="text-decoration: none;">
+        <div style="background-color: #c0392b; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;">
+            Whack-a-Mole
+        </div>
+    </a>
 </div>
 
 <br>
@@ -50,13 +70,14 @@ Hi! My name is [Your Full Name]
 ### College Ready Blog
 
 <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;margin-bottom:8px;">
-  <a href="/peppa-pig/" style="text-decoration:none;"><div style="background:#238636;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">▶ Play Peppa Pig Game</div></a>
-  <a href="/oop.html" style="text-decoration:none;"><div style="background:#1f6feb;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">OOP & Methods</div></a>
-  <a href="/data.html" style="text-decoration:none;"><div style="background:#9b59b6;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Data, Operators & Control</div></a>
-  <a href="/io-api.html" style="text-decoration:none;"><div style="background:#e67e22;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">I/O & API</div></a>
-  <a href="/practices.html" style="text-decoration:none;"><div style="background:#16a085;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Coding Practices & SDLC</div></a>
-  <a href="/debugging.html" style="text-decoration:none;"><div style="background:#c0392b;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Docs & Debugging</div></a>
-  <a href="/testing.html" style="text-decoration:none;"><div style="background:#d4ac0d;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Testing & Other Games</div></a>
+  <a href="/oop.html" style="text-decoration:none;"><div style="background:#1f6feb;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Object-Oriented Programming</div></a>
+  <a href="/control.html" style="text-decoration:none;"><div style="background:#2ea043;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Control Structures</div></a>
+  <a href="/datatypes.html" style="text-decoration:none;"><div style="background:#9b59b6;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Data Types</div></a>
+  <a href="/operators.html" style="text-decoration:none;"><div style="background:#e67e22;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Operators</div></a>
+  <a href="/io-api.html" style="text-decoration:none;"><div style="background:#0891b2;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Input/Output</div></a>
+  <a href="/documentation.html" style="text-decoration:none;"><div style="background:#16a085;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Documentation</div></a>
+  <a href="/debugging.html" style="text-decoration:none;"><div style="background:#c0392b;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Debugging</div></a>
+  <a href="/testing.html" style="text-decoration:none;"><div style="background:#d4ac0d;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Testing & Verification</div></a>
   <a href="/CollegeReadyBlog.html" style="text-decoration:none;"><div style="background:#30363d;color:white;padding:10px 18px;border-radius:6px;font-weight:bold;">Full Blog</div></a>
 </div>
 

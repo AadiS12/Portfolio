@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Testing &amp; Other Games — College Ready Blog</title>
+<title>Testing &amp; Verification — College Ready Blog</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/darcula.min.css">
@@ -420,20 +420,80 @@
 
   <!-- Back nav -->
   <div style="margin-bottom:28px;">
-    <a href="/CollegeReadyBlog.html" style="color:#58a6ff;font-size:14px;">← College Ready Blog</a>
+    <a href="/" style="color:#58a6ff;font-size:14px;">← Home</a>
     &nbsp;&nbsp;
-    <a href="/" style="color:#8b949e;font-size:14px;">Home</a>
+    <a href="/CollegeReadyBlog.html" style="color:#8b949e;font-size:14px;">Full Blog</a>
   </div>
 
-  <!-- SECTION 11: TESTING -->
-  <h2 id="testing">✅ Testing &amp; Verification</h2>
+  <h1 class="title">Testing &amp; Verification</h1>
+  <p class="subtitle">Gameplay Testing · Integration Testing · API Error Handling</p>
 
-  <h3>Gameplay Testing</h3>
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h4>📋 Table of Contents</h4>
+    <ol>
+      <li><a href="#gameplay-testing">Gameplay Testing</a></li>
+      <li><a href="#integration-testing">Integration Testing</a></li>
+      <li><a href="#api-error-handling">API Error Handling</a></li>
+    </ol>
+  </div>
+
+  <h2 id="gameplay-testing">🎮 Gameplay Testing</h2>
+  <h3>Level completion, character interactions, collision detection</h3>
   <p>
     Each level was play-tested end-to-end to verify: laser collision correctly reduces boss HP, player HP correctly depletes on contact and enemy laser hits, the lose screen appears and the level restarts when player HP hits 0, and the win condition advances to the next level (or shows the final win screen on Level 3).
   </p>
 
-  <h3>Integration Testing — Leaderboard API</h3>
+  <div class="code-runner-container" id="runner-gameplay" data-storage-key="cs111-blog-runner-gameplay">
+    <div class="challenge-box">
+      <h3>Gameplay Testing Practice</h3>
+      <p>Run these test cases to see how gameplay logic is verified — HP reduction, clamping to 0, defeat flag, and lose/win conditions.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <span class="execTime"></span>
+      </div>
+      <textarea class="editor-textarea">// Simulate gameplay test cases
+let passed = 0, failed = 0;
+function assert(description, condition) {
+  if (condition) { console.log('✅ PASS: ' + description); passed++; }
+  else           { console.log('❌ FAIL: ' + description); failed++; }
+}
+
+// Test 1: Laser hit reduces boss HP
+const boss = { health: 3, maxHealth: 3, isDefeated: false };
+boss.health = Math.max(0, boss.health - 1);
+assert('Laser hit reduces boss HP by 1', boss.health === 2);
+
+// Test 2: HP clamps to 0, not negative
+boss.health = Math.max(0, boss.health - 10);
+assert('Boss HP clamps to 0 (no negatives)', boss.health === 0);
+
+// Test 3: Boss defeated when HP hits 0
+boss.isDefeated = boss.health === 0;
+assert('isDefeated set when HP reaches 0', boss.isDefeated === true);
+
+// Test 4: Player HP depletes on contact
+let playerHP = 3;
+playerHP = Math.max(0, playerHP - 1);
+assert('Player HP depletes on contact', playerHP === 2);
+
+// Test 5: Lose screen triggered when player HP hits 0
+playerHP = 0;
+assert('Lose screen triggered at 0 HP', playerHP <= 0);
+
+console.log('\n' + passed + ' passed, ' + failed + ' failed');</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click ▶ Run to execute...</div></div>
+  </div>
+
+  <h2 id="integration-testing">🔗 Integration Testing</h2>
+  <h3>Leaderboard API — successful score saving and AI responses</h3>
   <pre><code><span class="cm">// Integration test — verified in browser with Network tab open</span>
 <span class="cm">// 1. Win Level 3 → postScore() fires → Network tab shows POST /api/leaderboard</span>
 <span class="cm">// 2. Response status: 200 OK</span>
@@ -441,7 +501,56 @@
 <span class="cm">// 4. getLeaderboard() → GET /api/leaderboard → array of score objects returned</span>
 <span class="cm">// 5. JSON.parse verified — object destructuring logs each entry correctly</span></code></pre>
 
-  <h3>API Error Handling — try/catch</h3>
+  <div class="code-runner-container" id="runner-integration" data-storage-key="cs111-blog-runner-integration">
+    <div class="challenge-box">
+      <h3>Integration Testing Practice</h3>
+      <p>Run this to simulate a full leaderboard integration test — POST scores, then GET and sort them. Try adding more players.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <span class="execTime"></span>
+      </div>
+      <textarea class="editor-textarea">// Simulate leaderboard integration test with mock API
+const mockDB = [];
+
+async function postScore(player, score) {
+  const entry = { id: mockDB.length + 1, player, score, date: '2026-03-23' };
+  mockDB.push(entry);
+  console.log('POST /api/leaderboard → 200 OK');
+  console.log('  body: ' + JSON.stringify({ player, score }));
+  console.log('  response: ' + JSON.stringify(entry));
+  return entry;
+}
+
+async function getLeaderboard() {
+  const sorted = [...mockDB].sort((a, b) => b.score - a.score);
+  console.log('\nGET /api/leaderboard → 200 OK');
+  sorted.forEach(({ id, player, score }) => {
+    console.log('  #' + id + '  ' + player.padEnd(14) + score + ' pts');
+  });
+  return sorted;
+}
+
+async function runTest() {
+  await postScore('IshanJha',  300);
+  await postScore('AadiSaini', 250);
+  await postScore('IshanJha',  400);
+  await getLeaderboard();
+  console.log('\nTest complete — all scores saved and retrieved correctly.');
+}
+
+runTest();</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click ▶ Run to execute...</div></div>
+  </div>
+
+  <h2 id="api-error-handling">⚠️ API Error Handling</h2>
+  <h3>try/catch blocks for fetch failures</h3>
   <pre><code><span class="cm">// Tested by temporarily pointing pythonURI to a bad endpoint</span>
 <span class="kw">try</span> {
   <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(badUrl, fetchOptions);

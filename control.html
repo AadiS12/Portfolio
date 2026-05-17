@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control Structures — College Ready Blog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/darcula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d1117; color: #e6edf3; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; }
+  a { color: #58a6ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .page { max-width: 800px; margin: 0 auto; padding: 60px 24px 100px; }
+  h1.title { text-align: center; font-size: 34px; font-weight: 700; color: #f0f6fc; margin-bottom: 14px; line-height: 1.2; }
+  .subtitle { text-align: center; color: #8b949e; font-size: 15px; max-width: 620px; margin: 0 auto 48px; line-height: 1.6; }
+  hr { border: none; border-top: 1px solid #21262d; margin: 44px 0; }
+  h2 { font-size: 22px; font-weight: 700; color: #f0f6fc; margin: 44px 0 14px; padding-bottom: 8px; border-bottom: 1px solid #21262d; }
+  h3 { font-size: 17px; font-weight: 600; color: #e6edf3; margin: 28px 0 10px; }
+  h4 { font-size: 13px; font-weight: 600; color: #8b949e; text-transform: uppercase; letter-spacing: 0.07em; margin: 22px 0 8px; }
+  p { margin-bottom: 14px; color: #c9d1d9; font-size: 15px; }
+  ul { margin: 0 0 16px 20px; }
+  ul li { color: #c9d1d9; font-size: 15px; margin-bottom: 4px; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; background: #161b22; color: #79c0ff; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d; }
+  pre { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.7; }
+  pre code { background: none; border: none; padding: 0; color: #e6edf3; }
+  .kw   { color: #ff7b72; }
+  .fn   { color: #d2a8ff; }
+  .str  { color: #a5d6ff; }
+  .num  { color: #f2cc60; }
+  .cm   { color: #8b949e; font-style: italic; }
+  .cls  { color: #ffa657; }
+  .bool { color: #79c0ff; }
+  .annotation { background: #0d1f38; border-left: 3px solid #388bfd; border-radius: 0 6px 6px 0; padding: 12px 16px; margin-bottom: 24px; font-size: 13.5px; color: #8b949e; line-height: 1.6; }
+  .annotation strong { color: #c9d1d9; }
+  .toc { background: linear-gradient(135deg, #161b22 0%, #0d1117 100%); border: 1px solid #30363d; border-top: 3px solid #2ea043; border-radius: 10px; padding: 22px 28px; margin-bottom: 40px; font-size: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+  .toc h4 { margin: 0 0 16px; font-size: 15px; color: #f0f6fc; letter-spacing: 0.03em; }
+  .toc ol { margin-left: 0; padding-left: 0; counter-reset: toc-counter; list-style: none; }
+  .toc li { counter-increment: toc-counter; margin-bottom: 0; display: flex; align-items: center; gap: 10px; padding: 5px 8px; border-radius: 5px; transition: background 0.15s; }
+  .toc li:hover { background: #21262d; }
+  .toc li::before { content: counter(toc-counter); min-width: 22px; height: 22px; background: #2ea043; color: #fff; border-radius: 50%; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .toc a { color: #c9d1d9; transition: color 0.15s; }
+  .toc a:hover { color: #58a6ff; text-decoration: none; }
+  .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid #21262d; text-align: center; font-size: 13px; color: #8b949e; line-height: 1.9; }
+  .code-runner-container { background: #161b22; border: 1px solid #30363d; border-radius: 8px; margin: 24px 0; overflow: hidden; }
+  .challenge-box { background: #0d1f38; border-bottom: 1px solid #30363d; padding: 14px 18px; }
+  .challenge-box h3 { color: #f0f6fc; margin-bottom: 6px; font-size: 16px; }
+  .challenge-box p { color: #c9d1d9; font-size: 14px; margin: 0; }
+  .editor-container, .output-container { background: #161b22; }
+  .control-panel { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #0d1117; border-bottom: 1px solid #30363d; }
+  .control-panel button { background: #1f6feb; color: #fff; border: 1px solid #388bfd; border-radius: 6px; padding: 5px 10px; font-size: 13px; cursor: pointer; }
+  .control-panel button:hover { background: #388bfd; }
+  .control-panel select { background: #161b22; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; padding: 6px 10px; font-size: 13px; }
+  .editor-textarea { width: 100%; min-height: 220px; border: none; background: #161b22; color: #e6edf3; font-family: 'JetBrains Mono', monospace; font-size: 14px; padding: 12px; }
+  .output-content { background: #161b22; border: 1px solid #30363d; border-radius: 6px; margin: 12px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #e6edf3; min-height: 76px; max-height: 280px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; }
+  .lineCount, .charCount, .execTime { color: #8b949e; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Back nav -->
+  <div style="margin-bottom:28px;">
+    <a href="/" style="color:#58a6ff;font-size:14px;">← Home</a>
+    &nbsp;&nbsp;
+    <a href="/CollegeReadyBlog.html" style="color:#8b949e;font-size:14px;">Full Blog</a>
+  </div>
+
+  <h1 class="title">Control Structures</h1>
+  <p class="subtitle">Iteration · Conditionals · Nested Conditions</p>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h4>📋 Table of Contents</h4>
+    <ol>
+      <li><a href="#iteration">Iteration</a></li>
+      <li><a href="#conditionals">Conditionals</a></li>
+      <li><a href="#nested-conditions">Nested Conditions</a></li>
+    </ol>
+  </div>
+
+  <!-- ITERATION -->
+  <h2 id="iteration">🔁 Iteration</h2>
+  <p>
+    Loops are used everywhere in the game — to move lasers, check collisions, and iterate over game object arrays. The game uses <code>for</code>, <code>forEach</code>, and <code>while</code>-style animation loops.
+  </p>
+
+  <h3>for loop — iterate backwards through laser array</h3>
+  <pre><code><span class="cm">// Iterate backwards through the lasers array — safe to splice while looping</span>
+<span class="kw">for</span> (<span class="kw">let</span> i = <span class="kw">this</span>.lasers.length - <span class="num">1</span>; i >= <span class="num">0</span>; i--) {
+  <span class="kw">const</span> L = <span class="kw">this</span>.lasers[i];
+
+  L.x    += L.vx;        <span class="cm">// move laser each frame</span>
+  L.y    += L.vy;
+  L.life -= <span class="num">1</span>;           <span class="cm">// count down lifespan</span>
+
+  <span class="kw">if</span> (L.life <= <span class="num">0</span>) {
+    <span class="kw">this</span>.lasers.<span class="fn">splice</span>(i, <span class="num">1</span>);   <span class="cm">// remove expired laser</span>
+    <span class="kw">continue</span>;
+  }
+  <span class="cm">// ... collision checks below ...</span>
+}</code></pre>
+  <div class="annotation">
+    This <code>for</code> loop moves every laser every frame. Iterating <strong>backwards</strong> is essential: when <code>splice(i, 1)</code> removes a laser, everything above that index shifts down by one. A forward loop would skip the element that just moved into index <code>i</code>. Backwards iteration means only already-visited indices shift, so nothing is missed.
+  </div>
+
+  <h3>forEach — iterating over game object collections</h3>
+  <pre><code><span class="cm">// forEach iterates all active lasers to draw them on the canvas</span>
+<span class="kw">this</span>.lasers.<span class="fn">forEach</span>(L => {
+  <span class="kw">const</span> ctx = <span class="kw">this</span>.gameEnv?.ctx;
+  <span class="kw">if</span> (!ctx) <span class="kw">return</span>;
+  ctx.fillStyle = L.isPlayerLaser ? <span class="str">'#58a6ff'</span> : <span class="str">'#ff7b72'</span>;  <span class="cm">// blue=player, red=enemy</span>
+  ctx.<span class="fn">beginPath</span>();
+  ctx.<span class="fn">arc</span>(L.x, L.y, <span class="num">5</span>, <span class="num">0</span>, Math.PI * <span class="num">2</span>);
+  ctx.<span class="fn">fill</span>();
+});
+
+<span class="cm">// forEach also used in leaderboard rendering</span>
+scores.<span class="fn">forEach</span>(({ player, score }, index) => {
+  console.<span class="fn">log</span>(<span class="str">`#${index + <span class="num">1</span>} ${player}: ${score}`</span>);
+});</code></pre>
+  <div class="annotation">
+    <code>forEach</code> is used when you need to process every element and don't need to break early or splice. For rendering, every laser needs to be drawn without any removal logic — <code>forEach</code> is the clean choice. For the <code>for</code> loop used during collision/removal, <code>forEach</code> can't be used because you need the index <code>i</code> to call <code>splice</code>.
+  </div>
+
+  <!-- Code Runner: Iteration practice -->
+  <div class="code-runner-container" id="runner-iteration" data-storage-key="cs111-control-iteration">
+    <div class="challenge-box">
+      <h3>Code Runner — Iteration Practice</h3>
+      <p>Practice iterating backwards through an array and safely removing elements — the same pattern used for lasers every frame.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">// Simulate the laser update loop
+const lasers = [
+  { id: 1, life: 3, vx: 2 },
+  { id: 2, life: 1, vx: 3 },
+  { id: 3, life: 5, vx: 1 },
+  { id: 4, life: 0, vx: 2 },  // already expired
+];
+
+// Iterate BACKWARDS — safe to splice while looping
+for (let i = lasers.length - 1; i >= 0; i--) {
+  const L = lasers[i];
+  L.life -= 1;
+  if (L.life <= 0) {
+    console.log(`Laser ${L.id} expired — removing`);
+    lasers.splice(i, 1);
+    continue;
+  }
+  console.log(`Laser ${L.id}: life=${L.life}`);
+}
+
+console.log(`\nActive lasers remaining: ${lasers.length}`);</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Chars: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click ▶ to run ...</div>
+    </div>
+  </div>
+
+  <h3>while-style animation loop — game engine frame loop</h3>
+  <pre><code><span class="cm">// The game engine drives all updates in a requestAnimationFrame loop</span>
+<span class="cm">// equivalent to: while (game is running) { update all objects; draw frame; }</span>
+<span class="kw">function</span> <span class="fn">gameLoop</span>() {
+  <span class="kw">if</span> (!<span class="kw">this</span>.running) <span class="kw">return</span>;   <span class="cm">// while condition check</span>
+  <span class="kw">this</span>.<span class="fn">update</span>();                  <span class="cm">// update all game objects</span>
+  requestAnimationFrame(<span class="kw">this</span>.gameLoop.<span class="fn">bind</span>(<span class="kw">this</span>));
+}
+
+<span class="cm">// Inside PeppaBattleLevelBase.update() — called 60x/sec by the loop</span>
+<span class="fn">update</span>() {
+  <span class="kw">if</span> (<span class="kw">this</span>.battleEnded) <span class="kw">return</span>;
+  <span class="kw">this</span>.<span class="fn">updateLasers</span>();    <span class="cm">// runs the for loop above</span>
+  <span class="kw">this</span>.<span class="fn">drawLasers</span>();      <span class="cm">// runs the forEach above</span>
+  <span class="kw">this</span>.<span class="fn">checkBossDefeat</span>();
+}</code></pre>
+  <div class="annotation">
+    The game engine uses <code>requestAnimationFrame</code> which calls the update function 60 times per second — structurally identical to a <code>while(running)</code> loop. Every laser, every boss movement, every collision check happens inside this loop. Without iteration, nothing in the game would move.
+  </div>
+
+  <hr>
+
+  <!-- CONDITIONALS -->
+  <h2 id="conditionals">🔀 Conditionals</h2>
+  <p>
+    Conditionals control every state transition in the game — when the battle ends, whether the player wins or loses, and which level loads next. They use <code>if/else</code> chains and guard clauses.
+  </p>
+
+  <h3>if/else — state transitions in the game loop</h3>
+  <pre><code><span class="fn">update</span>() {
+  <span class="cm">// Conditional 1: guard clause — stop everything if battle is over</span>
+  <span class="kw">if</span> (<span class="kw">this</span>.battleEnded) <span class="kw">return</span>;
+
+  <span class="cm">// Conditional 2: check win condition</span>
+  <span class="kw">if</span> (boss.isDefeated && !<span class="kw">this</span>.battleEnded) {
+    <span class="kw">this</span>.battleEnded = <span class="bool">true</span>;
+    <span class="kw">const</span> isFinalLevel = ctrl.currentLevelIndex === ctrl.levelClasses?.length - <span class="num">1</span>;
+    <span class="kw">if</span> (isFinalLevel) {
+      <span class="kw">this</span>.<span class="fn">showWinScreen</span>();
+    } <span class="kw">else</span> {
+      <span class="kw">this</span>.messageTimeout = <span class="fn">setTimeout</span>(() => {
+        <span class="kw">if</span> (ctrl?.currentLevel) ctrl.currentLevel.continue = <span class="bool">false</span>;
+      }, <span class="num">1100</span>);
+    }
+    <span class="kw">return</span>;
+  }
+
+  <span class="cm">// Conditional 3: lose condition</span>
+  <span class="kw">if</span> (<span class="kw">this</span>.playerHealth <= <span class="num">0</span> && !<span class="kw">this</span>.battleEnded) {
+    <span class="kw">this</span>.battleEnded = <span class="bool">true</span>;
+    <span class="kw">this</span>.<span class="fn">showLoseScreenAndRestart</span>();
+  }
+}</code></pre>
+  <div class="annotation">
+    The three conditionals are the entire win/lose logic. The guard clause at the top stops the game loop once the battle ends. The <code>if/else</code> in the win path decides whether to show the final win screen or advance to the next level.
+  </div>
+
+  <div class="code-runner-container" id="runner-conditionals" data-storage-key="cs111-conditionals">
+    <div class="challenge-box">
+      <h3>Try It — Conditionals</h3>
+      <p>Run this to see the win/lose logic. Try changing <code>playerHealth</code> to 0 to trigger the lose path instead.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">let battleEnded = false;
+let playerHealth = 3;
+let levelIndex = 0;
+const totalLevels = 3;
+
+function update(bossDefeated) {
+  if (battleEnded) { console.log('Battle over — update blocked'); return; }
+
+  if (bossDefeated) {
+    battleEnded = true;
+    if (levelIndex === totalLevels - 1) {
+      console.log('Final level complete — show win screen!');
+    } else {
+      levelIndex++;
+      console.log('Advance to level ' + (levelIndex + 1));
+    }
+    return;
+  }
+
+  if (playerHealth <= 0) {
+    battleEnded = true;
+    console.log('Player died — restart');
+  }
+}
+
+update(false);  // nothing happens yet
+update(true);   // boss defeated — win path
+update(true);   // blocked by battleEnded guard</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- NESTED CONDITIONS -->
+  <h2 id="nested-conditions">🔀 Nested Conditions</h2>
+  <p>
+    Nested conditions implement complex game logic where multiple state checks must pass simultaneously before an action fires — like power-up activation, attack cooldowns, or multi-stage collision detection.
+  </p>
+
+  <h3>Nested conditions — attack cooldown with compound checks</h3>
+  <pre><code><span class="cm">// Outer condition: player pressed SPACE this frame</span>
+<span class="kw">if</span> (<span class="kw">this</span>.attackRequested) {
+  <span class="kw">this</span>.attackRequested = <span class="bool">false</span>;
+
+  <span class="cm">// Inner condition: cooldown elapsed AND boss is still alive</span>
+  <span class="kw">if</span> (now - <span class="kw">this</span>.lastAttackAt >= <span class="kw">this</span>.attackCooldownMs && !boss.isDefeated) {
+    <span class="kw">this</span>.lastAttackAt = now;
+    <span class="kw">this</span>.<span class="fn">spawnLaserStraight</span>(px, py, player.direction, <span class="bool">true</span>);
+  }
+}</code></pre>
+  <div class="annotation">
+    These two layers of conditions prevent infinite laser spam. The outer check confirms the player pressed SPACE this frame. The inner check uses <code>&amp;&amp;</code> to require both: enough time since the last shot AND the boss isn't already dead. If either inner condition fails, no laser fires and <code>lastAttackAt</code> doesn't reset — the cooldown keeps ticking. This nested structure is what gives combat its rhythm.
+  </div>
+
+  <h3>Multi-level conditions — power-up + collision + direction</h3>
+  <pre><code><span class="cm">// AABB collision — 4 conditions must all be true simultaneously</span>
+<span class="kw">if</span> (hitLeft         &lt;  boss.position.x + boss.width  &&
+    hitLeft + hitW   &gt;  boss.position.x               &&
+    hitTop           &lt;  boss.position.y + boss.height  &&
+    hitTop  + hitH   &gt;  boss.position.y) {
+
+  <span class="cm">// Nested: only player lasers damage boss, only enemy lasers damage player</span>
+  <span class="kw">if</span> (L.isPlayerLaser) {
+    boss.<span class="fn">takeDamage</span>(<span class="num">1</span>);
+
+    <span class="cm">// Nested deeper: only flash if boss is still vulnerable after the hit</span>
+    <span class="kw">if</span> (!boss.isDefeated) {
+      <span class="kw">this</span>.<span class="fn">flashDamageIndicator</span>();
+    }
+  } <span class="kw">else</span> {
+    <span class="kw">this</span>.<span class="fn">damagePlayer</span>(<span class="num">1</span>);
+  }
+
+  <span class="kw">this</span>.lasers.<span class="fn">splice</span>(i, <span class="num">1</span>);
+}</code></pre>
+  <div class="annotation">
+    This is the deepest nesting in the game — three levels of conditions. The outer AABB check confirms the rectangles overlap. The middle check reads <code>isPlayerLaser</code> to decide who takes damage. The innermost check avoids flashing a damage indicator on an already-defeated boss. Each level of nesting is necessary — collapsing them into one flat if-chain would require many more conditions and lose the logical structure.
+  </div>
+
+  <!-- Code Runner: Nested Conditions practice -->
+  <div class="code-runner-container" id="runner-nested" data-storage-key="cs111-control-nested">
+    <div class="challenge-box">
+      <h3>Code Runner — Nested Conditions Practice</h3>
+      <p>Simulate the attack cooldown logic with nested if/else conditions — the same pattern that gates laser firing in the game.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">let lastAttackAt = 0;
+const cooldownMs  = 500;
+const bossAlive   = true;
+
+function tryAttack(now, attackRequested) {
+  if (attackRequested) {
+    // inner nested condition: cooldown elapsed AND boss still alive
+    if (now - lastAttackAt >= cooldownMs && bossAlive) {
+      lastAttackAt = now;
+      console.log(`t=${now}ms: Attack FIRED`);
+    } else {
+      const remaining = cooldownMs - (now - lastAttackAt);
+      console.log(`t=${now}ms: Blocked — cooldown ${remaining}ms left`);
+    }
+  } else {
+    console.log(`t=${now}ms: No attack requested`);
+  }
+}
+
+tryAttack(0,    true);   // fires (first shot)
+tryAttack(200,  true);   // blocked — only 200ms since last
+tryAttack(600,  true);   // fires (600ms elapsed)
+tryAttack(700,  false);  // no request
+tryAttack(1200, true);   // fires</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Chars: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click ▶ to run ...</div>
+    </div>
+  </div>
+
+  <h4>📚 Related Homework: Nested Conditionals</h4>
+  <p><strong><a href="https://aadis12.github.io/student/NestedConditionalsHomework/">Nested Conditionals Homework</a></strong> — Demonstrates complex decision-making logic using nested if-else statements, directly applicable to boss behavior and win/lose conditions.</p>
+
+  <h4>📚 Related Homework: Iterations</h4>
+  <p><strong><a href="https://aadis12.github.io/student/IterationsHomework/">Iterations Homework</a></strong> — Shows proficiency in loops and iteration, essential for game loops, collision detection, and processing arrays of game objects.</p>
+
+  <div class="footer">
+    Built with JavaScript, Canvas API, and the OCS GameEngine<br>
+    CSSE Final Project — Sprint 6 · Aadi Saini · Mar 23, 2026
+  </div>
+
+</div>
+<script>
+(function() {
+  const containers = document.querySelectorAll('.code-runner-container');
+  if (!containers.length || typeof CodeMirror === 'undefined') return;
+  containers.forEach(container => {
+    const textarea = container.querySelector('.editor-textarea');
+    const storageKey = container.id;
+    const savedCode = localStorage.getItem(storageKey);
+    const defaultCode = textarea.textContent || '';
+    const editor = CodeMirror.fromTextArea(textarea, { lineNumbers: true, mode: 'javascript', theme: 'darcula', indentUnit: 2, tabSize: 2 });
+    editor.setValue(savedCode !== null ? savedCode : defaultCode);
+    const runBtn = container.querySelector('.runBtn');
+    const copyBtn = container.querySelector('.copyBtn');
+    const saveBtn = container.querySelector('.saveBtn');
+    const clearBtn = container.querySelector('.clearStorageBtn');
+    const outputContent = container.querySelector('.output-content');
+    const lineCount = container.querySelector('.lineCount');
+    const charCount = container.querySelector('.charCount');
+    const execTime = container.querySelector('.execTime');
+    const fontSizeSelect = container.querySelector('.fontSizeSelect');
+    function refreshStats() { const c = editor.getValue(); if(lineCount) lineCount.textContent = `Lines: ${c.split('\n').length}`; if(charCount) charCount.textContent = `Chars: ${c.length}`; }
+    editor.on('change', refreshStats); refreshStats();
+    fontSizeSelect?.addEventListener('change', () => { const cm = container.querySelector('.CodeMirror'); if(cm) cm.style.fontSize = fontSizeSelect.value + 'px'; editor.refresh(); });
+    clearBtn?.addEventListener('click', () => { localStorage.removeItem(storageKey); editor.setValue(defaultCode); outputContent.textContent = 'Reset.'; });
+    saveBtn?.addEventListener('click', () => { localStorage.setItem(storageKey, editor.getValue()); const o = saveBtn.textContent; saveBtn.textContent = '✔'; setTimeout(() => saveBtn.textContent = o, 1200); });
+    copyBtn?.addEventListener('click', () => { navigator.clipboard.writeText(editor.getValue()); const o = copyBtn.textContent; copyBtn.textContent = '✔'; setTimeout(() => copyBtn.textContent = o, 1200); });
+    container.querySelector('.copyOutputBtn')?.addEventListener('click', () => navigator.clipboard.writeText(outputContent.textContent));
+    function runCode() {
+      const code = editor.getValue(); outputContent.textContent = '⏳ Running...'; if(execTime) execTime.textContent = ''; const start = Date.now();
+      const logs = []; const origLog = console.log; console.log = (...a) => { logs.push(a.map(String).join(' ')); origLog.apply(console, a); };
+      try { eval(code); outputContent.textContent = logs.length ? logs.join('\n') : '[no output]'; }
+      catch(err) { outputContent.textContent = 'Error: ' + err.message; }
+      finally { console.log = origLog; if(execTime) execTime.textContent = `⏱ ${Date.now()-start}ms`; }
+    }
+    runBtn?.addEventListener('click', runCode);
+    editor.setOption('extraKeys', { 'Ctrl-Enter': runCode, 'Cmd-Enter': runCode });
+  });
+})();
+</script>
+</body>
+</html>

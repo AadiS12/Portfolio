@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JSDoc &amp; Debugging — College Ready Blog</title>
+<title>Debugging — College Ready Blog</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/darcula.min.css">
@@ -420,75 +420,54 @@
 
   <!-- Back nav -->
   <div style="margin-bottom:28px;">
-    <a href="/CollegeReadyBlog.html" style="color:#58a6ff;font-size:14px;">← College Ready Blog</a>
+    <a href="/" style="color:#58a6ff;font-size:14px;">← Home</a>
     &nbsp;&nbsp;
-    <a href="/" style="color:#8b949e;font-size:14px;">Home</a>
+    <a href="/CollegeReadyBlog.html" style="color:#8b949e;font-size:14px;">Full Blog</a>
   </div>
 
-  <!-- SECTION 9: COMMENTS -->
-  <h2 id="comments">📝 JSDoc Comments &amp; Code Documentation</h2>
-  <p>
-    Every custom class and method has JSDoc documentation with <code>@param</code> and <code>@returns</code> tags. Inline comments explain non-obvious logic throughout. Comment density exceeds the 10% requirement.
-  </p>
+  <h1 class="title">Debugging</h1>
+  <p class="subtitle">Console Debugging · Hit Box Visualization · Source-Level Debugging · Network Debugging · Application Debugging · Element Inspection</p>
 
-  <pre><code><span class="cm">/**
- * PeppaBossEnemy — custom boss class extending the Enemy base.
- * Adds health system, defeat state, invulnerability window,
- * movement AI, and hitbox debug visualization.
- *
- * @class PeppaBossEnemy
- * @extends Enemy
- * @example
- * // Instantiated automatically by the engine via this.classes array
- * const boss = new PeppaBossEnemy(sprite_data_enemy, gameEnv);
- */</span>
-<span class="kw">class</span> <span class="cls">PeppaBossEnemy</span> <span class="kw">extends</span> <span class="cls">Enemy</span> {
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h4>📋 Table of Contents</h4>
+    <ol>
+      <li><a href="#console">Console Debugging</a></li>
+      <li><a href="#hitbox">Hit Box Visualization</a></li>
+      <li><a href="#sources">Source-Level Debugging</a></li>
+      <li><a href="#network">Network Debugging</a></li>
+      <li><a href="#application">Application Debugging</a></li>
+      <li><a href="#elements">Element Inspection</a></li>
+    </ol>
+  </div>
 
-  <span class="cm">/**
-   * @param {Object} data              - Sprite and config data
-   * @param {number} data.health       - Starting HP for this boss
-   * @param {number} data.moveSpeed    - Pixels per frame toward player
-   * @param {Object} gameEnv           - Shared game environment reference
-   */</span>
-  <span class="fn">constructor</span>(data = <span class="kw">null</span>, gameEnv = <span class="kw">null</span>) {
-    <span class="kw">super</span>(data, gameEnv);
-    <span class="cm">/** @type {number} Current health points */</span>
-    <span class="kw">this</span>.health = data?.health ?? <span class="num">3</span>;
-    <span class="cm">/** @type {boolean} Whether boss is currently in defeat state */</span>
-    <span class="kw">this</span>.isDefeated = <span class="bool">false</span>;
-  }
-}</code></pre>
-
-  <hr>
-
-  <!-- SECTION 10: DEBUGGING -->
   <h2 id="debugging">🐛 Debugging</h2>
 
   <div class="table-wrap">
     <table>
       <tr><th>DevTools Tab</th><th>What I Used It For</th></tr>
-      <tr>
-        <td><strong>Console</strong></td>
+      <tr id="console">
+        <td><strong>Console Debugging</strong></td>
         <td>Every HP change, defeat event, laser spawn, and vulnerability reset logs to the console. I can track the full game state in real time across all 60fps frames without pausing execution.</td>
       </tr>
-      <tr>
-        <td><strong>Hitbox Visualization</strong></td>
+      <tr id="hitbox">
+        <td><strong>Hit Box Visualization</strong></td>
         <td><code>drawHitbox()</code> draws a red rectangle + fill over the boss sprite showing the exact collision boundary. I used this to fix misaligned hit detection where the sprite image didn't match the logical hitbox rectangle.</td>
       </tr>
-      <tr>
-        <td><strong>Sources (Breakpoints)</strong></td>
+      <tr id="sources">
+        <td><strong>Source-Level Debugging</strong></td>
         <td>Set a breakpoint inside <code>takeDamage()</code> to pause execution mid-frame, step through the invulnerability check line by line, and inspect <code>this.health</code>, <code>this.isVulnerable</code>, and <code>this.lastDamagedAt</code> in the Scope panel.</td>
       </tr>
-      <tr>
-        <td><strong>Network</strong></td>
+      <tr id="network">
+        <td><strong>Network Debugging</strong></td>
         <td>Inspected the leaderboard <code>fetch()</code> calls — verified the POST request body was correctly JSON-serialized, checked HTTP status codes (200 vs 401 vs 500), identified CORS errors, and read the raw response JSON.</td>
       </tr>
-      <tr>
-        <td><strong>Application</strong></td>
+      <tr id="application">
+        <td><strong>Application Debugging</strong></td>
         <td>Checked cookies and <code>localStorage</code> to verify the user's login session was persisting correctly between page reloads, and confirmed the auth token was being sent with API requests.</td>
       </tr>
-      <tr>
-        <td><strong>Elements</strong></td>
+      <tr id="elements">
+        <td><strong>Element Inspection</strong></td>
         <td>Used the Element Viewer to inspect the game's canvas element, HUD div, and laser overlay canvas. Verified CSS positioning of the HUD and confirmed the laser layer canvas was appended to the correct container.</td>
       </tr>
     </table>
@@ -501,8 +480,9 @@
     </div>
   </div>
 
-  <h4>Console Logging Pattern</h4>
-  <pre><code><span class="cm">// Strategic console.log placement — tracks state in update() and collision methods</span>
+  <h2 id="console-code" style="margin-top:32px;">Console Debugging — Code Example</h2>
+  <p>Every state-changing operation in the game logs a prefixed message so the full game state can be tracked in real time at 60fps without pausing.</p>
+  <pre><code><span class="cm">// Strategic console.log — prefixed tags make logs easy to filter in DevTools</span>
 console.<span class="fn">log</span>(<span class="str">`[PeppaBossEnemy] Spawned: ${data?.id} with ${<span class="kw">this</span>.health} HP`</span>);
 console.<span class="fn">log</span>(<span class="str">`[Boss] Hit! HP: ${<span class="kw">this</span>.health}/${<span class="kw">this</span>.maxHealth}`</span>);
 console.<span class="fn">log</span>(<span class="str">`[Boss] Defeated!`</span>);
@@ -511,11 +491,415 @@ console.<span class="fn">log</span>(<span class="str">`[Hitbox] pos=(${Math.roun
 console.<span class="fn">log</span>(<span class="str">`[Leaderboard] Score saved:`, data</span>);
 console.<span class="fn">error</span>(<span class="str">`[Leaderboard] POST failed:`, error.message</span>);</code></pre>
 
+  <div class="code-runner-container" id="runner-console" data-storage-key="cs111-blog-runner-console">
+    <div class="challenge-box">
+      <h3>Console Debugging Practice</h3>
+      <p>Run this to see prefixed log tags in action. Try changing the HP or adding more takeDamage() calls.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <span class="execTime"></span>
+      </div>
+      <textarea class="editor-textarea">// Simulate a boss fight with prefixed console logs
+class Boss {
+  constructor(name, health) {
+    this.name = name; this.health = health; this.maxHealth = health;
+    this.isDefeated = false;
+    console.log(`[${this.name}] Spawned with ${this.health} HP`);
+  }
+  takeDamage(amount = 1) {
+    if (this.isDefeated) { console.log(`[${this.name}] Already defeated`); return; }
+    this.health = Math.max(0, this.health - amount);
+    console.log(`[${this.name}] Hit! HP: ${this.health}/${this.maxHealth}`);
+    if (this.health === 0) { this.isDefeated = true; console.log(`[${this.name}] Defeated!`); }
+  }
+}
+
+const boss = new Boss('George Pig', 3);
+boss.takeDamage(1);
+boss.takeDamage(1);
+boss.takeDamage(1); // final hit — defeated
+boss.takeDamage(1); // already defeated</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click ▶ Run to execute...</div></div>
+  </div>
+
+  <h2 id="hitbox-code">Hit Box Visualization — Code Example</h2>
+  <p>The <code>drawHitbox()</code> method overlays a red rectangle on the boss sprite showing the exact collision boundary. Toggle it on during a live game session to see if the hitbox matches the visible sprite.</p>
+  <pre><code><span class="cm">/**
+ * Draws a red rectangle over the boss sprite for collision debugging.
+ * Only active when this.showHitbox === true (toggled by toggleHitbox()).
+ */</span>
+<span class="fn">drawHitbox</span>() {
+  <span class="kw">const</span> ctx = <span class="kw">this</span>.gameEnv?.ctx;
+  <span class="kw">if</span> (!ctx) <span class="kw">return</span>;
+  ctx.<span class="fn">save</span>();
+  ctx.strokeStyle = <span class="str">'rgba(255, 0, 0, 0.85)'</span>;  <span class="cm">// red outline</span>
+  ctx.lineWidth   = <span class="num">2</span>;
+  ctx.<span class="fn">strokeRect</span>(<span class="kw">this</span>.position.x, <span class="kw">this</span>.position.y, <span class="kw">this</span>.width, <span class="kw">this</span>.height);
+  ctx.fillStyle   = <span class="str">'rgba(255, 0, 0, 0.08)'</span>;   <span class="cm">// faint red fill</span>
+  ctx.<span class="fn">fillRect</span>(<span class="kw">this</span>.position.x, <span class="kw">this</span>.position.y, <span class="kw">this</span>.width, <span class="kw">this</span>.height);
+  ctx.<span class="fn">restore</span>();
+  console.<span class="fn">log</span>(<span class="str">`[Hitbox] pos=(${Math.round(<span class="kw">this</span>.position.x)},${Math.round(<span class="kw">this</span>.position.y)}) size=${<span class="kw">this</span>.width}x${<span class="kw">this</span>.height}`</span>);
+}
+
+<span class="cm">// toggleHitbox() switches the debug view on/off without restarting the game</span>
+<span class="fn">toggleHitbox</span>() {
+  <span class="kw">this</span>.showHitbox = !<span class="kw">this</span>.showHitbox;
+  console.<span class="fn">log</span>(<span class="str">`[Hitbox] now ${<span class="kw">this</span>.showHitbox ? <span class="str">'ON'</span> : <span class="str">'OFF'</span>}`</span>);
+  <span class="kw">return</span> <span class="kw">this</span>.showHitbox;
+}
+
+<span class="cm">// In update() — only draws hitbox when flag is true</span>
+<span class="kw">if</span> (<span class="kw">this</span>.showHitbox) <span class="kw">this</span>.<span class="fn">drawHitbox</span>();</code></pre>
+  <div class="annotation">
+    I discovered the hitbox was too large relative to the pig body in the sprite image — lasers were registering hits that visually looked like misses. Setting <code>widthPercentage: 0.45</code> and <code>heightPercentage: 0.6</code> in the sprite config shrunk the hitbox to match the visible body, making combat feel accurate.
+  </div>
+
+  <div class="code-runner-container" id="runner-hitbox" data-storage-key="cs111-blog-runner-hitbox">
+    <div class="challenge-box">
+      <h3>Hit Box Visualization Practice</h3>
+      <p>Run this to see hitbox math in action — the logical hitbox is smaller than the sprite. Try changing the percentage values.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <span class="execTime"></span>
+      </div>
+      <textarea class="editor-textarea">// Boss sprite is 80x80 but the logical hitbox is smaller
+const spriteW = 80, spriteH = 80;
+const hitboxW = Math.round(spriteW * 0.45); // 45% of sprite width
+const hitboxH = Math.round(spriteH * 0.60); // 60% of sprite height
+const offsetX = (spriteW - hitboxW) / 2;    // center horizontally
+const offsetY = (spriteH - hitboxH) / 2;    // center vertically
+
+const spriteX = 100, spriteY = 150;
+const hbX = spriteX + offsetX;
+const hbY = spriteY + offsetY;
+
+console.log('Sprite:  pos=(' + spriteX + ',' + spriteY + ') size=' + spriteW + 'x' + spriteH);
+console.log('Hitbox:  pos=(' + hbX + ',' + hbY + ') size=' + hitboxW + 'x' + hitboxH);
+console.log('Edges:   left=' + hbX + ' right=' + (hbX+hitboxW) + ' top=' + hbY + ' bottom=' + (hbY+hitboxH));
+console.log('\nHitbox is smaller — lasers must hit the inner box to register.');</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click ▶ Run to execute...</div></div>
+  </div>
+
+  <h2 id="sources-code">Source-Level Debugging — Code Example</h2>
+  <p>Setting a breakpoint inside <code>takeDamage()</code> in the Sources tab pauses JS execution mid-frame, letting you step through the invulnerability check line by line and inspect live variable values.</p>
+  <pre><code><span class="cm">// Set breakpoint on the line below in Chrome DevTools → Sources tab</span>
+<span class="cm">// When a laser hits the boss, execution pauses here. Inspect:</span>
+<span class="cm">//   this.health, this.isVulnerable, this.lastDamagedAt in the Scope panel</span>
+<span class="fn">takeDamage</span>(amount = <span class="num">1</span>) {
+  <span class="kw">if</span> (<span class="kw">this</span>.isDefeated) <span class="kw">return</span> <span class="bool">true</span>;   <span class="cm">// ← add breakpoint here</span>
+  <span class="kw">if</span> (!<span class="kw">this</span>.isVulnerable) {
+    console.<span class="fn">log</span>(<span class="str">'[Boss] Invulnerable - hit blocked'</span>);
+    <span class="kw">return</span> <span class="bool">false</span>;
+  }
+  <span class="kw">this</span>.health = Math.<span class="fn">max</span>(<span class="num">0</span>, <span class="kw">this</span>.health - amount);
+  <span class="kw">this</span>.isVulnerable  = <span class="bool">false</span>;
+  <span class="kw">this</span>.lastDamagedAt = Date.<span class="fn">now</span>();    <span class="cm">// ← step over to see this update in Scope</span>
+  <span class="kw">if</span> (<span class="kw">this</span>.health === <span class="num">0</span>) <span class="kw">this</span>.isDefeated = <span class="bool">true</span>;
+  <span class="kw">return</span> <span class="kw">this</span>.isDefeated;
+}
+
+<span class="cm">// Invulnerability reset — also useful to breakpoint to verify timer works</span>
+<span class="fn">update</span>() {
+  <span class="kw">if</span> (!<span class="kw">this</span>.isVulnerable) {
+    <span class="kw">if</span> (Date.<span class="fn">now</span>() - <span class="kw">this</span>.lastDamagedAt >= <span class="kw">this</span>.invulnerabilityMs) {
+      <span class="kw">this</span>.isVulnerable = <span class="bool">true</span>;  <span class="cm">// ← breakpoint here verifies 300ms resets correctly</span>
+    }
+  }
+}</code></pre>
+
+  <div class="code-runner-container" id="runner-sources" data-storage-key="cs111-blog-runner-sources">
+    <div class="challenge-box">
+      <h3>Source-Level Debugging Practice</h3>
+      <p>This simulates stepping through takeDamage() line by line. Run it to see what the Scope panel would show at each step.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <span class="execTime"></span>
+      </div>
+      <textarea class="editor-textarea">// Simulate breakpoint step-through of takeDamage()
+function takeDamage(boss, amount = 1) {
+  console.log('--- Breakpoint hit: takeDamage(' + amount + ') ---');
+  console.log('  this.isDefeated   = ' + boss.isDefeated);
+  console.log('  this.isVulnerable = ' + boss.isVulnerable);
+
+  if (boss.isDefeated)    { console.log('  → return true (already defeated)'); return true; }
+  if (!boss.isVulnerable) { console.log('  → return false (invulnerable)'); return false; }
+
+  boss.health = Math.max(0, boss.health - amount);
+  boss.isVulnerable = false;
+  boss.lastDamagedAt = Date.now();
+  console.log('  this.health now   = ' + boss.health);
+  if (boss.health === 0) boss.isDefeated = true;
+  console.log('  this.isDefeated   = ' + boss.isDefeated);
+  boss.isVulnerable = true; // instant reset for simulation
+  return boss.isDefeated;
+}
+
+const boss = { health: 3, maxHealth: 3, isDefeated: false, isVulnerable: true, lastDamagedAt: 0 };
+takeDamage(boss, 1);
+takeDamage(boss, 1);
+takeDamage(boss, 1); // final hit</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click ▶ Run to execute...</div></div>
+  </div>
+
+  <h2 id="network-code">Network Debugging — Code Example</h2>
+  <p>The Network tab shows every <code>fetch()</code> call with its request body, response status, and response JSON — essential for verifying the leaderboard API sends and receives correctly.</p>
+  <pre><code><span class="cm">// This fetch() call appears in the Network tab when the player wins</span>
+<span class="kw">async</span> <span class="fn">postScore</span>(playerName, score) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`${<span class="kw">this</span>.pythonURI}/api/leaderboard`</span>, {
+      method:  <span class="str">'POST'</span>,
+      headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+      body:    JSON.<span class="fn">stringify</span>({ player: playerName, score: score })
+      <span class="cm">// Network tab → Request tab: verify body is correct JSON</span>
+    });
+    <span class="cm">// Network tab → Response tab: check status code (200=OK, 401=unauth, 500=error)</span>
+    <span class="kw">if</span> (!response.ok) <span class="kw">throw</span> <span class="kw">new</span> <span class="cls">Error</span>(<span class="str">`HTTP ${response.status}`</span>);
+    <span class="kw">const</span> data = <span class="kw">await</span> response.<span class="fn">json</span>();
+    console.<span class="fn">log</span>(<span class="str">`[Leaderboard] Score saved:`, data</span>);
+    <span class="kw">return</span> data;
+  } <span class="kw">catch</span> (error) {
+    <span class="cm">// Network tab → shows red failed request if CORS or network error</span>
+    console.<span class="fn">error</span>(<span class="str">`[Leaderboard] POST failed:`, error.message</span>);
+    <span class="kw">return</span> <span class="kw">null</span>;
+  }
+}</code></pre>
+
+  <div class="code-runner-container" id="runner-network" data-storage-key="cs111-blog-runner-network">
+    <div class="challenge-box">
+      <h3>Network Debugging Practice</h3>
+      <p>Run this to simulate a leaderboard POST with a mock response — the same pattern you'd inspect in the Network tab.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <span class="execTime"></span>
+      </div>
+      <textarea class="editor-textarea">// Simulate postScore() with a mock fetch response
+async function postScore(playerName, score) {
+  console.log('[Network] POST /api/leaderboard');
+  console.log('[Network] Request body: ' + JSON.stringify({ player: playerName, score }));
+
+  // Simulated server response (real code uses actual fetch)
+  const mockResponse = await Promise.resolve({
+    ok: true, status: 200,
+    json: () => Promise.resolve({ id: 42, player: playerName, score, date: '2026-03-23' })
+  });
+
+  if (!mockResponse.ok) throw new Error('HTTP ' + mockResponse.status);
+  const data = await mockResponse.json();
+  console.log('[Network] Response ' + mockResponse.status + ' OK');
+  console.log('[Leaderboard] Score saved: ' + JSON.stringify(data));
+  return data;
+}
+
+postScore('IshanJha', 300);</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click ▶ Run to execute...</div></div>
+  </div>
+
+  <h2 id="application-code">Application Debugging — Code Example</h2>
+  <p>The Application tab shows cookies and <code>localStorage</code> — used to verify the auth session token persists between page reloads and is included with API requests.</p>
+  <pre><code><span class="cm">// Application tab → Cookies: verify jwt/session cookie is present</span>
+<span class="cm">// Application tab → Local Storage: check for stored game data</span>
+
+<span class="cm">// These values can be inspected in Application → Local Storage → localhost</span>
+localStorage.<span class="fn">setItem</span>(<span class="str">'peppaPigHighScore'</span>, score);
+localStorage.<span class="fn">getItem</span>(<span class="str">'peppaPigHighScore'</span>);   <span class="cm">// visible in Application tab</span>
+
+<span class="cm">// Cookie-based auth token sent automatically with credentialed fetch</span>
+<span class="kw">const</span> fetchOptions = {
+  credentials: <span class="str">'include'</span>,   <span class="cm">// ← sends cookies; verify in Application → Cookies</span>
+  headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> }
+};
+
+<span class="cm">// Application tab confirmed the jwt cookie was present and not expired</span>
+<span class="cm">// before the leaderboard POST was tested with Network tab</span></code></pre>
+
+  <div class="code-runner-container" id="runner-application" data-storage-key="cs111-blog-runner-application">
+    <div class="challenge-box">
+      <h3>Application Debugging Practice</h3>
+      <p>Run this to simulate localStorage get/set — the same values you'd inspect in Application → Local Storage in DevTools.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <span class="execTime"></span>
+      </div>
+      <textarea class="editor-textarea">// Simulate localStorage inspection (mock — same API as real localStorage)
+const mockStorage = {};
+const ls = {
+  setItem:    (k, v) => { mockStorage[k] = String(v); console.log('[Storage] SET ' + k + ' = ' + v); },
+  getItem:    (k)    => { const v = mockStorage[k] ?? null; console.log('[Storage] GET ' + k + ' → ' + v); return v; },
+  removeItem: (k)    => { delete mockStorage[k]; console.log('[Storage] REMOVED ' + k); }
+};
+
+const KEY = 'peppaPigHighScore';
+ls.setItem(KEY, 250);
+ls.getItem(KEY);
+ls.setItem(KEY, 300);   // new high score
+ls.getItem(KEY);        // should now show 300
+console.log('\nAll stored: ' + JSON.stringify(mockStorage));
+console.log('[Application Tab] Inspect in Application → Local Storage → localhost');</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click ▶ Run to execute...</div></div>
+  </div>
+
+  <h2 id="elements-code">Element Inspection — Code Example</h2>
+  <p>The Elements tab reveals the game's canvas element, HUD overlay, and laser canvas — used to verify CSS positioning and confirm the layer structure was correct.</p>
+  <pre><code><span class="cm">// The game creates multiple canvas/div elements — inspect them in Elements tab</span>
+
+<span class="cm">// Main game canvas (sprites are drawn here)</span>
+<span class="kw">const</span> gameCanvas = document.<span class="fn">getElementById</span>(<span class="str">'gameCanvas'</span>);
+gameCanvas.style.position = <span class="str">'absolute'</span>;
+gameCanvas.style.top      = <span class="str">'0'</span>;
+gameCanvas.style.left     = <span class="str">'0'</span>;
+
+<span class="cm">// Laser overlay canvas (appended on top of game canvas)</span>
+<span class="kw">this</span>.laserCanvas = document.<span class="fn">createElement</span>(<span class="str">'canvas'</span>);
+<span class="kw">this</span>.laserCanvas.style.position = <span class="str">'absolute'</span>;
+<span class="kw">this</span>.laserCanvas.style.zIndex   = <span class="str">'10'</span>;   <span class="cm">// ← Elements tab shows computed z-index</span>
+<span class="kw">this</span>.gameContainer.<span class="fn">appendChild</span>(<span class="kw">this</span>.laserCanvas);
+
+<span class="cm">// HUD div (health bars, score) — inspect CSS in Elements tab Styles panel</span>
+<span class="kw">this</span>.hudElement = document.<span class="fn">createElement</span>(<span class="str">'div'</span>);
+<span class="kw">this</span>.hudElement.style.position = <span class="str">'absolute'</span>;
+<span class="kw">this</span>.hudElement.style.zIndex   = <span class="str">'20'</span>;   <span class="cm">// above laser canvas</span>
+<span class="kw">this</span>.gameContainer.<span class="fn">appendChild</span>(<span class="kw">this</span>.hudElement);</code></pre>
+
+  <div class="code-runner-container" id="runner-elements" data-storage-key="cs111-blog-runner-elements">
+    <div class="challenge-box">
+      <h3>Element Inspection Practice</h3>
+      <p>Run this to see the layer stack the Elements tab would show — canvas, laser overlay, and HUD div with their z-index values.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <span class="execTime"></span>
+      </div>
+      <textarea class="editor-textarea">// Simulate element layer stack inspection
+const layers = [
+  { id: 'gameCanvas',  tag: 'canvas', zIndex: 1,  top: 0,  left: 0  },
+  { id: 'laserCanvas', tag: 'canvas', zIndex: 10, top: 0,  left: 0  },
+  { id: 'hudElement',  tag: 'div',    zIndex: 20, top: 10, left: 10 },
+];
+
+console.log('Element Inspection — Layer Stack (Elements tab view):');
+console.log('─'.repeat(55));
+layers.forEach(({ id, tag, zIndex, top, left }) => {
+  console.log('<' + tag + ' id="' + id + '">');
+  console.log('  position: absolute  z-index: ' + zIndex + '  top: ' + top + 'px  left: ' + left + 'px');
+});
+console.log('─'.repeat(55));
+console.log('hudElement (z:20) is on top of laserCanvas (z:10) is on top of gameCanvas (z:1)');
+console.log('This confirmed the HUD and laser layers rendered in the correct order.');</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click ▶ Run to execute...</div></div>
+  </div>
+
   <div class="footer">
     Built with JavaScript, Canvas API, and the OCS GameEngine<br>
     CSSE Final Project — Sprint 6 · Aadi Saini · Mar 23, 2026
   </div>
 
 </div>
+
+<script>
+(function() {
+  const containers = document.querySelectorAll('.code-runner-container');
+  if (!containers.length || typeof CodeMirror === 'undefined') return;
+  containers.forEach(container => {
+    const textarea = container.querySelector('.editor-textarea');
+    if (!textarea) return;
+    const storageKey = container.dataset.storageKey;
+    const savedCode  = storageKey ? localStorage.getItem(storageKey) : null;
+    const defaultCode = textarea.textContent || '';
+    const initialCode = savedCode !== null ? savedCode : defaultCode;
+    const editor = CodeMirror.fromTextArea(textarea, {
+      lineNumbers: true, mode: 'javascript', theme: 'darcula', indentUnit: 2, tabSize: 2, lineWrapping: true
+    });
+    editor.setValue(initialCode);
+    const runBtn = container.querySelector('.runBtn');
+    const copyBtn = container.querySelector('.copyBtn');
+    const saveBtn = container.querySelector('.saveBtn');
+    const clearBtn = container.querySelector('.clearStorageBtn');
+    const outputContent = container.querySelector('.output-content');
+    const lineCount = container.querySelector('.lineCount');
+    const charCount = container.querySelector('.charCount');
+    const execTimeEl = container.querySelector('.execTime');
+    function refreshStats() {
+      const code = editor.getValue();
+      if (lineCount) lineCount.textContent = `Lines: ${code.split('\n').length}`;
+      if (charCount) charCount.textContent = `Characters: ${code.length}`;
+    }
+    editor.on('change', refreshStats); refreshStats();
+    clearBtn?.addEventListener('click', () => {
+      if (storageKey) localStorage.removeItem(storageKey);
+      editor.setValue(defaultCode);
+      outputContent.textContent = 'Storage cleared. Code reset to default.';
+      if (execTimeEl) execTimeEl.textContent = '';
+    });
+    saveBtn?.addEventListener('click', () => {
+      if (storageKey) localStorage.setItem(storageKey, editor.getValue());
+      const old = saveBtn.textContent; saveBtn.textContent = '✔';
+      setTimeout(() => saveBtn.textContent = old, 1200);
+    });
+    copyBtn?.addEventListener('click', () => {
+      navigator.clipboard.writeText(editor.getValue());
+      const old = copyBtn.textContent; copyBtn.textContent = '✔';
+      setTimeout(() => copyBtn.textContent = old, 1200);
+    });
+    container.querySelector('.copyOutputBtn')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(outputContent.textContent);
+    });
+    function runCode() {
+      const code = editor.getValue();
+      if (outputContent) outputContent.textContent = '⏳ Running...';
+      if (execTimeEl) execTimeEl.textContent = '';
+      const start = Date.now();
+      const logs = [];
+      const origLog = console.log;
+      console.log = (...args) => { logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')); origLog.apply(console, args); };
+      try { eval(code); outputContent.textContent = logs.length ? logs.join('\n') : '[no output]'; }
+      catch (err) { outputContent.textContent = 'Error: ' + (err.message || err); }
+      finally { console.log = origLog; if (execTimeEl) execTimeEl.textContent = `⏱ ${Date.now() - start}ms`; }
+    }
+    runBtn?.addEventListener('click', runCode);
+    editor.setOption('extraKeys', { 'Ctrl-Enter': runCode, 'Cmd-Enter': runCode });
+  });
+})();
+</script>
 </body>
 </html>

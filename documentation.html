@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentation — College Ready Blog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/darcula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d1117; color: #e6edf3; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; }
+  a { color: #58a6ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .page { max-width: 800px; margin: 0 auto; padding: 60px 24px 100px; }
+  h1.title { text-align: center; font-size: 34px; font-weight: 700; color: #f0f6fc; margin-bottom: 14px; line-height: 1.2; }
+  .subtitle { text-align: center; color: #8b949e; font-size: 15px; max-width: 620px; margin: 0 auto 48px; line-height: 1.6; }
+  hr { border: none; border-top: 1px solid #21262d; margin: 44px 0; }
+  h2 { font-size: 22px; font-weight: 700; color: #f0f6fc; margin: 44px 0 14px; padding-bottom: 8px; border-bottom: 1px solid #21262d; }
+  h3 { font-size: 17px; font-weight: 600; color: #e6edf3; margin: 28px 0 10px; }
+  h4 { font-size: 13px; font-weight: 600; color: #8b949e; text-transform: uppercase; letter-spacing: 0.07em; margin: 22px 0 8px; }
+  p { margin-bottom: 14px; color: #c9d1d9; font-size: 15px; }
+  ul { margin: 0 0 16px 20px; }
+  ul li { color: #c9d1d9; font-size: 15px; margin-bottom: 4px; }
+  .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: #161b22; color: #8b949e; font-weight: 600; text-align: left; padding: 9px 14px; border: 1px solid #30363d; font-size: 13px; }
+  td { padding: 9px 14px; border: 1px solid #21262d; color: #c9d1d9; background: #0d1117; vertical-align: top; font-size: 14px; }
+  tr:hover td { background: #161b22; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; background: #161b22; color: #79c0ff; padding: 2px 6px; border-radius: 4px; border: 1px solid #30363d; }
+  pre { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.7; }
+  pre code { background: none; border: none; padding: 0; color: #e6edf3; }
+  .kw   { color: #ff7b72; }
+  .fn   { color: #d2a8ff; }
+  .str  { color: #a5d6ff; }
+  .num  { color: #f2cc60; }
+  .cm   { color: #8b949e; font-style: italic; }
+  .cls  { color: #ffa657; }
+  .bool { color: #79c0ff; }
+  .annotation { background: #0d1f38; border-left: 3px solid #388bfd; border-radius: 0 6px 6px 0; padding: 12px 16px; margin-bottom: 24px; font-size: 13.5px; color: #8b949e; line-height: 1.6; }
+  .annotation strong { color: #c9d1d9; }
+  .callout { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 14px 18px; margin-bottom: 20px; font-size: 14px; color: #c9d1d9; line-height: 1.6; }
+  .callout strong { color: #f0f6fc; }
+  .callout-blue  { border-color: #1f6feb; background: #0d1f38; }
+  .callout-green { border-color: #238636; background: #0d2b1a; }
+  .toc { background: linear-gradient(135deg, #161b22 0%, #0d1117 100%); border: 1px solid #30363d; border-top: 3px solid #16a085; border-radius: 10px; padding: 22px 28px; margin-bottom: 40px; font-size: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+  .toc h4 { margin: 0 0 16px; font-size: 15px; color: #f0f6fc; letter-spacing: 0.03em; }
+  .toc ol { margin-left: 0; padding-left: 0; counter-reset: toc-counter; list-style: none; }
+  .toc li { counter-increment: toc-counter; margin-bottom: 0; display: flex; align-items: center; gap: 10px; padding: 5px 8px; border-radius: 5px; transition: background 0.15s; }
+  .toc li:hover { background: #21262d; }
+  .toc li::before { content: counter(toc-counter); min-width: 22px; height: 22px; background: #16a085; color: #fff; border-radius: 50%; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .toc a { color: #c9d1d9; transition: color 0.15s; }
+  .toc a:hover { color: #58a6ff; text-decoration: none; }
+  .play-button { display: inline-block; background: #1f6feb; color: #ffffff; border: 1px solid #388bfd; border-radius: 10px; padding: 12px 22px; font-weight: 700; font-size: 15px; text-decoration: none; box-shadow: 0 8px 24px rgba(31, 111, 235, 0.25); transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease; }
+  .play-button:hover { background: #388bfd; text-decoration: none; transform: translateY(-1px); }
+  .hero-actions { text-align: center; margin: 24px 0 36px; }
+  .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid #21262d; text-align: center; font-size: 13px; color: #8b949e; line-height: 1.9; }
+  .code-runner-container { background: #161b22; border: 1px solid #30363d; border-radius: 8px; margin: 24px 0; overflow: hidden; }
+  .challenge-box { background: #0d1f38; border-bottom: 1px solid #30363d; padding: 14px 18px; }
+  .challenge-box h3 { color: #f0f6fc; margin-bottom: 6px; font-size: 16px; }
+  .challenge-box p { color: #c9d1d9; font-size: 14px; margin: 0; }
+  .editor-container, .output-container { background: #161b22; }
+  .control-panel { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #0d1117; border-bottom: 1px solid #30363d; }
+  .control-panel button { background: #1f6feb; color: #fff; border: 1px solid #388bfd; border-radius: 6px; padding: 5px 10px; font-size: 13px; cursor: pointer; }
+  .control-panel button:hover { background: #388bfd; }
+  .output-content { background: #161b22; border: 1px solid #30363d; border-radius: 6px; margin: 12px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #e6edf3; min-height: 76px; max-height: 280px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; }
+  .execTime { color: #8b949e; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Back nav -->
+  <div style="margin-bottom:28px;">
+    <a href="/" style="color:#58a6ff;font-size:14px;">← Home</a>
+    &nbsp;&nbsp;
+    <a href="/CollegeReadyBlog.html" style="color:#8b949e;font-size:14px;">Full Blog</a>
+  </div>
+
+  <h1 class="title">Documentation</h1>
+  <p class="subtitle">Code Comments · Mini-Lesson Documentation · Code Highlights</p>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h4>📋 Table of Contents</h4>
+    <ol>
+      <li><a href="#code-comments">Code Comments</a></li>
+      <li><a href="#mini-lesson">Mini-Lesson Documentation</a></li>
+      <li><a href="#code-highlights">Code Highlights</a></li>
+    </ol>
+  </div>
+
+  <!-- CODE COMMENTS -->
+  <h2 id="code-comments">📝 Code Comments</h2>
+  <p>
+    Every custom class and method in the game has JSDoc documentation with <code>@class</code>, <code>@extends</code>, <code>@param</code>, and <code>@returns</code> tags. Inline comments explain non-obvious logic throughout. Comment density exceeds the 10% requirement across all source files.
+  </p>
+
+  <h3>JSDoc class documentation — PeppaBossEnemy</h3>
+  <pre><code><span class="cm">/**
+ * PeppaBossEnemy — custom boss class extending the Enemy base.
+ * Adds health system, defeat state, invulnerability window,
+ * movement AI, and hitbox debug visualization.
+ *
+ * @class PeppaBossEnemy
+ * @extends Enemy
+ * @example
+ * // Instantiated automatically by the engine via this.classes array
+ * const boss = new PeppaBossEnemy(sprite_data_enemy, gameEnv);
+ */</span>
+<span class="kw">class</span> <span class="cls">PeppaBossEnemy</span> <span class="kw">extends</span> <span class="cls">Enemy</span> {
+
+  <span class="cm">/**
+   * @param {Object} data              - Sprite and config data
+   * @param {number} data.health       - Starting HP for this boss
+   * @param {number} data.moveSpeed    - Pixels per frame toward player
+   * @param {Object} gameEnv           - Shared game environment reference
+   */</span>
+  <span class="fn">constructor</span>(data = <span class="kw">null</span>, gameEnv = <span class="kw">null</span>) {
+    <span class="kw">super</span>(data, gameEnv);
+    <span class="cm">/** @type {number} Current health points */</span>
+    <span class="kw">this</span>.health = data?.health ?? <span class="num">3</span>;
+    <span class="cm">/** @type {boolean} Whether boss is currently in defeat state */</span>
+    <span class="kw">this</span>.isDefeated = <span class="bool">false</span>;
+    <span class="cm">/** @type {boolean} Whether boss can currently receive damage */</span>
+    <span class="kw">this</span>.isVulnerable = <span class="bool">true</span>;
+  }
+}</code></pre>
+
+  <h3>JSDoc method documentation — takeDamage()</h3>
+  <pre><code><span class="cm">/**
+ * Applies damage to the boss. Respects invulnerability window and defeat state.
+ * Starts the 300ms invulnerability cooldown after each successful hit.
+ *
+ * @param {number} amount - HP to subtract (default 1)
+ * @returns {boolean} true if this hit caused defeat, false otherwise
+ */</span>
+<span class="fn">takeDamage</span>(amount = <span class="num">1</span>) {
+  <span class="kw">if</span> (<span class="kw">this</span>.isDefeated) <span class="kw">return</span> <span class="bool">true</span>;
+  <span class="kw">if</span> (!<span class="kw">this</span>.isVulnerable) <span class="kw">return</span> <span class="bool">false</span>;
+  <span class="kw">this</span>.health = Math.<span class="fn">max</span>(<span class="num">0</span>, <span class="kw">this</span>.health - amount);
+  <span class="kw">this</span>.isVulnerable = <span class="bool">false</span>;
+  <span class="kw">this</span>.lastDamagedAt = Date.<span class="fn">now</span>();
+  <span class="kw">if</span> (<span class="kw">this</span>.health === <span class="num">0</span>) <span class="kw">this</span>.isDefeated = <span class="bool">true</span>;
+  <span class="kw">return</span> <span class="kw">this</span>.isDefeated;
+}
+
+<span class="cm">/**
+ * Moves boss toward a target object each frame using normalized direction.
+ * @param {Object} target - game object with .position, .width, .height
+ * @returns {boolean} true if movement occurred, false if already at target
+ */</span>
+<span class="fn">moveTowardPlayer</span>(target) {
+  <span class="kw">const</span> dx = (target.position.x + target.width  / <span class="num">2</span>) - (<span class="kw">this</span>.position.x + <span class="kw">this</span>.width  / <span class="num">2</span>);
+  <span class="kw">const</span> dy = (target.position.y + target.height / <span class="num">2</span>) - (<span class="kw">this</span>.position.y + <span class="kw">this</span>.height / <span class="num">2</span>);
+  <span class="kw">const</span> distance = Math.<span class="fn">hypot</span>(dx, dy);
+  <span class="kw">if</span> (distance > <span class="num">1</span>) {
+    <span class="kw">this</span>.position.x += (dx / distance) * <span class="kw">this</span>.moveSpeed;
+    <span class="kw">this</span>.position.y += (dy / distance) * <span class="kw">this</span>.moveSpeed;
+    <span class="kw">return</span> <span class="bool">true</span>;
+  }
+  <span class="kw">return</span> <span class="bool">false</span>;
+}</code></pre>
+  <div class="annotation">
+    JSDoc comments use the <code>/** */</code> syntax and tags like <code>@param {type} name - description</code> and <code>@returns {type}</code>. These are recognized by IDEs to show autocomplete hints and type information. The <code>@example</code> tag shows how to instantiate the class. Inline <code>/** @type {type} */</code> comments before properties document instance variables for anyone reading the code later.
+  </div>
+
+  <h3>Strategic inline comment pattern</h3>
+  <pre><code><span class="cm">// Strategic console.log placement — prefixed tags make logs easy to filter</span>
+console.<span class="fn">log</span>(<span class="str">`[PeppaBossEnemy] Spawned: ${data?.id} with ${<span class="kw">this</span>.health} HP`</span>);
+console.<span class="fn">log</span>(<span class="str">`[Boss] Hit! HP: ${<span class="kw">this</span>.health}/${<span class="kw">this</span>.maxHealth}`</span>);
+console.<span class="fn">log</span>(<span class="str">`[Boss] Invulnerable, ignoring damage.`</span>);
+console.<span class="fn">log</span>(<span class="str">`[Boss] Defeated!`</span>);
+console.<span class="fn">log</span>(<span class="str">`[Hitbox] pos=(${Math.round(<span class="kw">this</span>.position.x)},${Math.round(<span class="kw">this</span>.position.y)})`</span>);
+console.<span class="fn">log</span>(<span class="str">`[Leaderboard] Score saved:`, data</span>);
+console.<span class="fn">error</span>(<span class="str">`[Leaderboard] POST failed:`, error.message</span>);</code></pre>
+
+  <hr>
+
+  <!-- MINI-LESSON DOCUMENTATION -->
+  <h2 id="mini-lesson">📖 Mini-Lesson Documentation</h2>
+  <p>
+    The rubric requires a <em>comic/visual post with embedded runtime game demo</em> in the personal portfolio. This entire blog — eight separate pages with annotated code snippets, concept explanations, live code runners, and a playable embedded game — is that mini-lesson.
+  </p>
+
+  <div class="callout callout-blue">
+    <strong>What makes this a mini-lesson:</strong> Each page teaches one concept area by showing real code from the game, explaining WHY the code is structured the way it is (not just what it does), and letting readers run modified versions themselves via the embedded code runners.
+  </div>
+
+  <h3>What each page teaches</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Page</th><th>Concept Taught</th><th>Interactive Element</th></tr>
+      <tr><td><a href="/oop.html">Object-Oriented Programming</a></td><td>Class hierarchy, inheritance, constructor chaining, method overriding</td><td>Code runner — build your own class</td></tr>
+      <tr><td><a href="/control.html">Control Structures</a></td><td>for/forEach loops, conditionals, nested conditions</td><td>Annotated live game code</td></tr>
+      <tr><td><a href="/datatypes.html">Data Types</a></td><td>Numbers, Strings, Booleans, Arrays, Objects</td><td>Type reference table with game examples</td></tr>
+      <tr><td><a href="/operators.html">Operators</a></td><td>Math, string, boolean expressions</td><td>AABB collision walkthrough</td></tr>
+      <tr><td><a href="/io-api.html">Input/Output</a></td><td>Keyboard events, Canvas API, API calls, async/await, JSON</td><td>Live iTunes API demo — plays real audio</td></tr>
+      <tr><td><a href="/documentation.html">Documentation</a></td><td>JSDoc, mini-lesson structure, code highlights</td><td>This page</td></tr>
+      <tr><td><a href="/debugging.html">Debugging</a></td><td>Console, Hitbox, Sources, Network, Application, Elements</td><td>DevTools debugging walkthrough</td></tr>
+      <tr><td><a href="/testing.html">Testing &amp; Verification</a></td><td>Gameplay testing, integration testing, API error handling</td><td>Code runner — iTunes API practice</td></tr>
+    </table>
+  </div>
+
+  <div class="hero-actions">
+    <a class="play-button" href="/peppa-pig/" target="_blank" rel="noopener noreferrer">▶ Play the Game (Embedded Demo)</a>
+  </div>
+
+  <p style="text-align:center;color:#8b949e;font-size:13px;margin-top:-20px;">The game itself is the runtime demo referenced throughout every page.</p>
+
+  <!-- Code Runner: Mini-Lesson Overview -->
+  <div class="code-runner-container" id="runner-minilesson" data-storage-key="cs111-blog-runner-minilesson">
+    <div class="challenge-box">
+      <h3>Mini-Lesson Structure Practice</h3>
+      <p>Each page in this blog is a mini-lesson. Run this to see how the lesson catalog is structured as data — try adding a new page entry.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <span class="execTime"></span>
+      </div>
+      <textarea class="editor-textarea">// Mini-lesson catalog — each page teaches one concept
+const lessons = [
+  { page: 'oop.html',           topic: 'Object-Oriented Programming', runners: 6 },
+  { page: 'control.html',       topic: 'Control Structures',          runners: 3 },
+  { page: 'datatypes.html',     topic: 'Data Types',                  runners: 5 },
+  { page: 'operators.html',     topic: 'Operators',                   runners: 3 },
+  { page: 'io-api.html',        topic: 'Input / Output & APIs',       runners: 6 },
+  { page: 'documentation.html', topic: 'Documentation',               runners: 3 },
+  { page: 'debugging.html',     topic: 'Debugging',                   runners: 6 },
+  { page: 'testing.html',       topic: 'Testing & Verification',      runners: 3 },
+];
+
+const total = lessons.reduce((sum, l) => sum + l.runners, 0);
+console.log(`Blog: ${lessons.length} mini-lessons, ${total} code runners total.\n`);
+
+lessons.forEach(({ page, topic, runners }) => {
+  console.log(`${topic.padEnd(35)} → ${runners} runner(s)  [${page}]`);
+});</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click ▶ Run to execute...</div></div>
+  </div>
+
+  <hr>
+
+  <!-- CODE HIGHLIGHTS -->
+  <h2 id="code-highlights">✨ Code Highlights</h2>
+  <p>
+    The rubric requires annotated key code snippets demonstrating OOP, APIs, and collision. Every page in this blog uses the same annotation pattern — a blue left-border callout box under each code block that explains WHY the code is written the way it is, not just what it does.
+  </p>
+
+  <h3>Annotation pattern — used on every page</h3>
+  <div style="background:#0d1f38;border-left:3px solid #388bfd;border-radius:0 6px 6px 0;padding:12px 16px;margin-bottom:24px;font-size:13.5px;color:#8b949e;line-height:1.6;">
+    <strong>This blue callout box</strong> is the annotation format used throughout. Each one answers: what non-obvious decision was made here, why was it necessary, and what would break if this were done differently. This is the "Code Highlights" rubric requirement — annotating key snippets with explanations.
+  </div>
+
+  <h3>Key annotated snippets across the blog</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Snippet</th><th>Page</th><th>Why It's Highlighted</th></tr>
+      <tr>
+        <td><code>super(data, gameEnv)</code> constructor chaining</td>
+        <td><a href="/oop.html#constructor-chaining">OOP</a></td>
+        <td>Explains why omitting super() breaks the entire sprite loading chain</td>
+      </tr>
+      <tr>
+        <td>AABB collision detection (4 && conditions)</td>
+        <td><a href="/operators.html#boolean-expressions">Operators</a></td>
+        <td>Shows how all four edge checks must pass simultaneously for a hit</td>
+      </tr>
+      <tr>
+        <td>Backwards for loop with splice()</td>
+        <td><a href="/control.html#iteration">Control Structures</a></td>
+        <td>Explains why forward iteration misses elements after removal</td>
+      </tr>
+      <tr>
+        <td>async/await + try/catch for iTunes API</td>
+        <td><a href="/io-api.html#async-io">Input/Output</a></td>
+        <td>Shows the full async I/O pattern: fetch → parse → destructure → use</td>
+      </tr>
+      <tr>
+        <td>moveTowardPlayer() normalized vector</td>
+        <td><a href="/oop.html#methods">OOP</a></td>
+        <td>Explains normalization — why dividing by distance keeps speed constant</td>
+      </tr>
+      <tr>
+        <td>takeDamage() invulnerability window</td>
+        <td><a href="/oop.html#methods">OOP</a></td>
+        <td>Three nested conditions — each prevents a different damage exploit</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Code Runner: Code Highlights Practice -->
+  <div class="code-runner-container" id="runner-highlights" data-storage-key="cs111-blog-runner-highlights">
+    <div class="challenge-box">
+      <h3>Code Highlights Practice</h3>
+      <p>Run this to see the backwards-loop annotation in action. Try changing it to a forward loop and see what gets skipped.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button>
+        <button class="copyBtn">⎘</button>
+        <button class="saveBtn">💾</button>
+        <button class="clearStorageBtn">🗑</button>
+        <span class="execTime"></span>
+      </div>
+      <textarea class="editor-textarea">// Code highlight: backwards loop with splice()
+// WHY: iterating forward and removing elements shifts indices — items get skipped
+const lasers = ['laser0', 'laser1', 'laser2', 'laser3', 'laser4'];
+
+// Remove even-indexed lasers (simulate collision hit detection)
+for (let i = lasers.length - 1; i >= 0; i--) {
+  if (i % 2 === 0) {
+    const removed = lasers.splice(i, 1);
+    console.log('Hit! Removed:', removed[0]);
+  }
+}
+
+console.log('Remaining lasers:', lasers);
+// Try changing to: for (let i = 0; i < lasers.length; i++)
+// and notice how some lasers are skipped!</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container"><div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div><div class="output-content">Click ▶ Run to execute...</div></div>
+  </div>
+
+  <hr>
+
+  <!-- CODE RUNNER -->
+  <h2>▶ Documentation Practice</h2>
+  <p>Run the code below to see documented classes in action. The JSDoc comments describe each method — try adding your own <code>@param</code> comments or a new documented method.</p>
+
+  <div class="code-runner-container">
+    <div class="challenge-box">
+      <h3>JSDoc & Code Comments Practice</h3>
+      <p>Modify or extend the documented class below. Notice how JSDoc tags (<code>@param</code>, <code>@returns</code>, <code>@class</code>) describe types and behavior without repeating what the code already says.</p>
+    </div>
+    <div class="control-panel">
+      <button onclick="runDocs()">▶ Run</button>
+      <button onclick="clearDocsOutput()">✕ Clear</button>
+      <span class="execTime" id="docs-time"></span>
+    </div>
+    <div class="editor-container">
+      <textarea id="docs-editor">/**
+ * @class Enemy
+ * Base class for all game enemies.
+ */
+class Enemy {
+  /**
+   * @param {string} name - Display name shown in HUD
+   * @param {number} health - Starting hit points
+   */
+  constructor(name, health) {
+    this.name = name;
+    this.health = health;
+    this.maxHealth = health;
+    this.isDefeated = false;
+  }
+
+  /**
+   * Reduces health by amount. Clamps to 0. Sets isDefeated when health hits 0.
+   * @param {number} amount - Damage to apply
+   * @returns {boolean} true if this hit defeated the enemy
+   */
+  takeDamage(amount) {
+    this.health = Math.max(0, this.health - amount);
+    if (this.health === 0) this.isDefeated = true;
+    return this.isDefeated;
+  }
+
+  /** @returns {string} Status string for HUD display */
+  getStatus() {
+    return `${this.name} — HP: ${this.health}/${this.maxHealth}${this.isDefeated ? ' [DEFEATED]' : ''}`;
+  }
+}
+
+// Strategic inline comment — why 3 hits, not 1?
+// George is the tutorial boss; 3 HP gives the player time to learn the attack pattern.
+const george = new Enemy('George Pig', 3);
+console.log(george.getStatus());
+
+george.takeDamage(1);
+console.log(george.getStatus());
+
+const defeated = george.takeDamage(5);  // overkill — clamps to 0
+console.log(george.getStatus());
+console.log('Defeated on this hit:', defeated);</textarea>
+    </div>
+    <div class="output-container">
+      <div class="output-content" id="docs-output">Output will appear here...</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Built with JavaScript, Canvas API, and the OCS GameEngine<br>
+    CSSE Final Project — Sprint 6 · Aadi Saini · Mar 23, 2026
+  </div>
+
+</div>
+
+<script>
+(function() {
+  const containers = document.querySelectorAll('.code-runner-container');
+  if (!containers.length || typeof CodeMirror === 'undefined') return;
+  containers.forEach(container => {
+    const textarea = container.querySelector('.editor-textarea');
+    if (!textarea) return;
+    const storageKey = container.dataset.storageKey;
+    const savedCode  = storageKey ? localStorage.getItem(storageKey) : null;
+    const defaultCode = textarea.textContent || '';
+    const initialCode = savedCode !== null ? savedCode : defaultCode;
+    const editor = CodeMirror.fromTextArea(textarea, {
+      lineNumbers: true, mode: 'javascript', theme: 'darcula', indentUnit: 2, tabSize: 2, lineWrapping: true
+    });
+    editor.setValue(initialCode);
+    const runBtn = container.querySelector('.runBtn');
+    const copyBtn = container.querySelector('.copyBtn');
+    const saveBtn = container.querySelector('.saveBtn');
+    const clearBtn = container.querySelector('.clearStorageBtn');
+    const outputContent = container.querySelector('.output-content');
+    const lineCount = container.querySelector('.lineCount');
+    const charCount = container.querySelector('.charCount');
+    const execTimeEl = container.querySelector('.execTime');
+    function refreshStats() {
+      const code = editor.getValue();
+      if (lineCount) lineCount.textContent = `Lines: ${code.split('\n').length}`;
+      if (charCount) charCount.textContent = `Characters: ${code.length}`;
+    }
+    editor.on('change', refreshStats); refreshStats();
+    clearBtn?.addEventListener('click', () => {
+      if (storageKey) localStorage.removeItem(storageKey);
+      editor.setValue(defaultCode);
+      outputContent.textContent = 'Storage cleared. Code reset to default.';
+      if (execTimeEl) execTimeEl.textContent = '';
+    });
+    saveBtn?.addEventListener('click', () => {
+      if (storageKey) localStorage.setItem(storageKey, editor.getValue());
+      const old = saveBtn.textContent; saveBtn.textContent = '✔';
+      setTimeout(() => saveBtn.textContent = old, 1200);
+    });
+    copyBtn?.addEventListener('click', () => {
+      navigator.clipboard.writeText(editor.getValue());
+      const old = copyBtn.textContent; copyBtn.textContent = '✔';
+      setTimeout(() => copyBtn.textContent = old, 1200);
+    });
+    container.querySelector('.copyOutputBtn')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(outputContent.textContent);
+    });
+    function runCode() {
+      const code = editor.getValue();
+      if (outputContent) outputContent.textContent = '⏳ Running...';
+      if (execTimeEl) execTimeEl.textContent = '';
+      const start = Date.now();
+      const logs = [];
+      const origLog = console.log;
+      console.log = (...args) => { logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')); origLog.apply(console, args); };
+      try { eval(code); outputContent.textContent = logs.length ? logs.join('\n') : '[no output]'; }
+      catch (err) { outputContent.textContent = 'Error: ' + (err.message || err); }
+      finally { console.log = origLog; if (execTimeEl) execTimeEl.textContent = `⏱ ${Date.now() - start}ms`; }
+    }
+    runBtn?.addEventListener('click', runCode);
+    editor.setOption('extraKeys', { 'Ctrl-Enter': runCode, 'Cmd-Enter': runCode });
+  });
+})();
+</script>
+
+<script>
+  const docsEditor = CodeMirror.fromTextArea(document.getElementById('docs-editor'), {
+    mode: 'javascript', theme: 'darcula', lineNumbers: true,
+    indentUnit: 2, tabSize: 2, lineWrapping: true
+  });
+
+  function runDocs() {
+    const code = docsEditor.getValue();
+    const out = document.getElementById('docs-output');
+    const timeEl = document.getElementById('docs-time');
+    const logs = [];
+    const origLog = console.log;
+    console.log = (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' '));
+    const t0 = performance.now();
+    try { eval(code); } catch(e) { logs.push('Error: ' + e.message); }
+    const ms = (performance.now() - t0).toFixed(2);
+    console.log = origLog;
+    out.textContent = logs.join('\n') || '(no output)';
+    timeEl.textContent = `${ms}ms`;
+  }
+
+  function clearDocsOutput() {
+    document.getElementById('docs-output').textContent = 'Output will appear here...';
+    document.getElementById('docs-time').textContent = '';
+  }
+</script>
+</body>
+</html>

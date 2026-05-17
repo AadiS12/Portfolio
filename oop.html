@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OOP &amp; Methods — College Ready Blog</title>
+<title>Object-Oriented Programming — College Ready Blog</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/darcula.min.css">
@@ -420,17 +420,33 @@
 
   <!-- Back nav -->
   <div style="margin-bottom:28px;">
-    <a href="/CollegeReadyBlog.html" style="color:#58a6ff;font-size:14px;">← College Ready Blog</a>
+    <a href="/" style="color:#58a6ff;font-size:14px;">← Home</a>
     &nbsp;&nbsp;
-    <a href="/" style="color:#8b949e;font-size:14px;">Home</a>
+    <a href="/CollegeReadyBlog.html" style="color:#8b949e;font-size:14px;">Full Blog</a>
   </div>
 
-  <!-- SECTION 2: OOP -->
-  <h2 id="oop">📐 OOP — Classes, Inheritance &amp; Constructor Chaining</h2>
+  <h1 class="title">Object-Oriented Programming</h1>
+  <p class="subtitle">Writing Classes · Methods &amp; Parameters · Instantiation · Inheritance · Method Overriding · Constructor Chaining</p>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h4>📋 Table of Contents</h4>
+    <ol>
+      <li><a href="#inheritance">Inheritance (Basic)</a></li>
+      <li><a href="#writing-classes">Writing Classes</a></li>
+      <li><a href="#constructor-chaining">Constructor Chaining</a></li>
+      <li><a href="#method-overriding">Method Overriding</a></li>
+      <li><a href="#instantiation">Instantiation &amp; Objects</a></li>
+      <li><a href="#methods">Methods &amp; Parameters</a></li>
+    </ol>
+  </div>
+
+  <!-- SECTION: OOP -->
+  <h2 id="inheritance">📐 Inheritance (Basic) — Class Hierarchy</h2>
 
   <h3>Class Hierarchy (2+ levels deep)</h3>
   <p>
-    The game is organized into two inheritance chains. The first controls the boss enemy — what it looks like, how it moves, and how it takes damage. The second controls each level — what objects appear, what the background is, and what rules the battle follows. Without this hierarchy, every level would need its own copy of all the laser, HUD, and collision code.
+    Inheritance lets one class <em>extend</em> another, so it automatically gets all of the parent's properties and methods without rewriting them. The game has two inheritance chains. One controls the boss enemy, one controls the levels. Without inheritance, every level would need its own copy of the laser, HUD, and collision code — that's hundreds of duplicate lines.
   </p>
 
   <div class="tree">
@@ -444,47 +460,144 @@
     <span class="tree-l1">└── PeppaLevel3</span><span class="tree-note">  ← Daddy Pig (final boss) config</span>
   </div>
 
+  <div class="code-runner-container" id="runner-inheritance" data-storage-key="cs111-inheritance">
+    <div class="challenge-box">
+      <h3>Try It — Inheritance</h3>
+      <p>Run this to see how a child class automatically gets the parent's methods. Try adding your own method to <code>PeppaBossEnemy</code>.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">class Enemy {
+  constructor(name) { this.name = name; }
+  greet() { return 'I am ' + this.name; }
+}
+
+// PeppaBossEnemy gets greet() for free — never writes it
+class PeppaBossEnemy extends Enemy {
+  constructor(name, health) {
+    super(name);
+    this.health = health;
+  }
+}
+
+const boss = new PeppaBossEnemy('George Pig', 3);
+console.log(boss.greet());        // from Enemy
+console.log('HP:', boss.health);  // from PeppaBossEnemy</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
+  </div>
+
+  <h2 id="writing-classes">✏️ Writing Classes</h2>
   <h3>Writing Custom Classes</h3>
   <p>
-    <code>PeppaBossEnemy</code> is the class that controls everything about the boss character during a fight — how much health it has, whether it's currently alive, how fast it chases the player, and whether it can be hit right now. Without this class existing as a separate object, there would be no boss to fight. The constructor runs once when the level starts and sets up all the starting values that control boss behavior for the entire fight.
+    A class is a blueprint. You define it once, and then you can create as many objects from it as you want. Each object gets its own copy of all the properties. In the game, <code>PeppaBossEnemy</code> is the blueprint for the boss — it stores the boss's health, speed, and defeat state. The <code>constructor</code> runs once when the boss is created and sets all the starting values.
   </p>
 
-  <pre><code><span class="cm">/**
- * PeppaBossEnemy — custom boss class extending the Enemy base.
- * Adds health system, defeat state, invulnerability window, and hitbox debug.
- * @class PeppaBossEnemy
- * @extends Enemy
- */</span>
-<span class="kw">class</span> <span class="cls">PeppaBossEnemy</span> <span class="kw">extends</span> <span class="cls">Enemy</span> {
+  <h3>What a class looks like</h3>
+  <pre><code><span class="kw">class</span> <span class="cls">PeppaBossEnemy</span> <span class="kw">extends</span> <span class="cls">Enemy</span> {
 
-  <span class="cm">/**
-   * @param {Object} data     - Sprite and config data for this enemy
-   * @param {Object} gameEnv  - Shared game environment (canvas, objects, path)
-   */</span>
-  <span class="fn">constructor</span>(data = <span class="kw">null</span>, gameEnv = <span class="kw">null</span>) {
-    <span class="kw">super</span>(data, gameEnv);        <span class="cm">// constructor chaining → Enemy → GameObject</span>
+  <span class="fn">constructor</span>(data, gameEnv) {
+    <span class="kw">super</span>(data, gameEnv);           <span class="cm">// run the parent's setup first</span>
 
-    <span class="kw">this</span>.health         = data?.health    ?? <span class="num">3</span>;   <span class="cm">// Number</span>
-    <span class="kw">this</span>.maxHealth      = <span class="kw">this</span>.health;
-    <span class="kw">this</span>.moveSpeed      = data?.moveSpeed ?? <span class="num">0.8</span>; <span class="cm">// Number</span>
-    <span class="kw">this</span>.isDefeated     = <span class="bool">false</span>;                  <span class="cm">// Boolean</span>
-    <span class="kw">this</span>.isVulnerable   = <span class="bool">true</span>;                   <span class="cm">// Boolean</span>
-    <span class="kw">this</span>.showHitbox     = <span class="bool">false</span>;                  <span class="cm">// Boolean</span>
-    <span class="kw">this</span>.lastDamagedAt  = <span class="num">0</span>;                      <span class="cm">// Number (timestamp)</span>
-    <span class="kw">this</span>.invulnerabilityMs = <span class="num">300</span>;               <span class="cm">// Number (cooldown window)</span>
+    <span class="kw">this</span>.health      = data?.health    ?? <span class="num">3</span>;   <span class="cm">// how many hits the boss can take</span>
+    <span class="kw">this</span>.maxHealth   = <span class="kw">this</span>.health;             <span class="cm">// saved so the HUD can show "3/3"</span>
+    <span class="kw">this</span>.moveSpeed   = data?.moveSpeed ?? <span class="num">0.8</span>; <span class="cm">// pixels per frame toward the player</span>
+    <span class="kw">this</span>.isDefeated  = <span class="bool">false</span>;                  <span class="cm">// turns true when health hits 0</span>
+    <span class="kw">this</span>.isVulnerable = <span class="bool">true</span>;                  <span class="cm">// false during the 300ms cooldown after a hit</span>
+  }
 
-    console.<span class="fn">log</span>(<span class="str">`[PeppaBossEnemy] Spawned: ${data?.id} with ${<span class="kw">this</span>.health} HP`</span>);
+}</code></pre>
+  <div class="annotation">
+    <code>data?.health ?? 3</code> means: "use <code>data.health</code> if it exists, otherwise default to 3." This lets George Pig and Daddy Pig both use the same class but with different health values — you just pass a different <code>data</code> object when creating each one.
+  </div>
+
+  <div class="code-runner-container" id="runner-writing-classes" data-storage-key="cs111-writing-classes">
+    <div class="challenge-box">
+      <h3>Try It — Writing Classes</h3>
+      <p>Run this to see how a class acts as a blueprint. Try creating a third boss with different values.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">class PeppaBossEnemy {
+  constructor(name, health, speed) {
+    this.name = name;
+    this.health = health;
+    this.speed = speed;
+    this.isDefeated = false;
+  }
+}
+
+const george = new PeppaBossEnemy('George Pig', 3, 0.8);
+const daddy  = new PeppaBossEnemy('Daddy Pig', 12, 1.4);
+
+console.log(george.name + ' — HP: ' + george.health + ', speed: ' + george.speed);
+console.log(daddy.name  + ' — HP: ' + daddy.health  + ', speed: ' + daddy.speed);
+console.log('isDefeated:', george.isDefeated);</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
+  </div>
+
+  <h2 id="constructor-chaining">🔗 Constructor Chaining</h2>
+  <p>
+    When a child class has its own constructor, the very first thing it must do is call <code>super()</code>. <code>super()</code> runs the <em>parent's</em> constructor — it passes the arguments up the chain so the parent can do its setup before the child adds anything on top. Without calling <code>super()</code> first, <code>this</code> doesn't exist yet and JavaScript throws a ReferenceError.
+  </p>
+
+  <h3>Boss chain — PeppaBossEnemy → Enemy → GameObject</h3>
+  <p>
+    <code>super(data, gameEnv)</code> here means: "run <code>Enemy</code>'s constructor with these same two arguments." <code>Enemy</code> then calls <code>super()</code> again, which runs <code>GameObject</code>'s constructor. By the time that chain finishes, the boss has a canvas element, a loaded sprite image, and a position on screen — all set up by the parent classes. Only after that does <code>PeppaBossEnemy</code>'s own constructor run and add <code>this.health</code>, <code>this.moveSpeed</code>, etc.
+  </p>
+  <pre><code><span class="kw">class</span> <span class="cls">PeppaBossEnemy</span> <span class="kw">extends</span> <span class="cls">Enemy</span> {
+  <span class="fn">constructor</span>(data, gameEnv) {
+    <span class="kw">super</span>(data, gameEnv);  <span class="cm">// runs Enemy's constructor → which runs GameObject's constructor</span>
+                           <span class="cm">// after this line: canvas, sprite image, and position all exist</span>
+    <span class="kw">this</span>.health    = data?.health    ?? <span class="num">3</span>;
+    <span class="kw">this</span>.moveSpeed = data?.moveSpeed ?? <span class="num">0.8</span>;
+    <span class="kw">this</span>.isDefeated = <span class="bool">false</span>;
+  }
+}</code></pre>
+
+  <h3>Level chain — PeppaLevel1/3 → PeppaBattleLevelBase</h3>
+  <p>
+    Each level passes a different config object to <code>super()</code>. The base class constructor reads those values and sets up the laser system, HUD, and collisions once. <code>PeppaLevel1</code> and <code>PeppaLevel3</code> are completely different fights but their entire constructor is just one line.
+  </p>
+  <pre><code><span class="kw">class</span> <span class="cls">PeppaLevel1</span> <span class="kw">extends</span> <span class="cls">PeppaBattleLevelBase</span> {
+  <span class="fn">constructor</span>(gameEnv) {
+    <span class="kw">super</span>(gameEnv, { enemyName: <span class="str">'George Pig'</span>, enemyHealth: <span class="num">3</span>, enemySpeed: <span class="num">0.8</span> });
+    <span class="cm">// super() passes this config up — PeppaBattleLevelBase reads it and builds the level</span>
+  }
+}
+
+<span class="kw">class</span> <span class="cls">PeppaLevel3</span> <span class="kw">extends</span> <span class="cls">PeppaBattleLevelBase</span> {
+  <span class="fn">constructor</span>(gameEnv) {
+    <span class="kw">super</span>(gameEnv, { enemyName: <span class="str">'Daddy Pig'</span>, enemyHealth: <span class="num">12</span>, enemySpeed: <span class="num">1.4</span> });
+    <span class="cm">// same base class, different numbers = completely different fight</span>
   }
 }</code></pre>
   <div class="annotation">
-    <strong>super(data, gameEnv)</strong> is what makes the boss actually appear on screen. Calling it runs the <code>Enemy</code> constructor, which sets up the canvas element and loads the boss sprite image from the <code>src</code> path. Without that <code>super()</code> call, the boss would have no image, no canvas to draw on, and no position in the game world — it simply wouldn't exist visually. Everything my custom code adds (health, speed, defeat state) layers on top of what <code>super()</code> builds.
+    All the laser, HUD, and collision code lives once in <code>PeppaBattleLevelBase</code>. The child classes don't repeat any of it — they just pass different numbers through <code>super()</code> to get a different fight.
   </div>
 
-  <!-- Code Runner: OOP class exercise -->
+  <!-- Code Runner: Constructor Chaining practice -->
   <div class="code-runner-container" id="runner-oop" data-storage-key="cs111-blog-runner-oop">
     <div class="challenge-box">
-      <h3>Code Runner Challenge</h3>
-      <p>Create a class with constructor and method, then run it. This is a small practice for OOP and constructor chaining in your game classes.</p>
+      <h3>Code Runner — Constructor Chaining Practice</h3>
+      <p>Run this to see constructor chaining with <code>super()</code>. Try changing the name or adding a new property in the child constructor.</p>
     </div>
     <div class="editor-container">
       <div class="control-panel">
@@ -495,26 +608,32 @@
         <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
         <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option><option value="20">20px</option></select>
       </div>
-      <textarea class="editor-textarea">class SimpleBoss {
-  constructor(name, hp = 8) {
+      <textarea class="editor-textarea">// Constructor chaining with super()
+class Animal {
+  constructor(name, sound) {
     this.name = name;
-    this.hp = hp;
-    this.isDefeated = false;
+    this.sound = sound;
   }
-
-  takeDamage(dmg) {
-    this.hp -= dmg;
-    if (this.hp <= 0) {
-      this.isDefeated = true;
-      return `${this.name} is defeated!`;
-    }
-    return `${this.name} has ${this.hp} HP remaining.`;
+  speak() {
+    return `${this.name} says ${this.sound}!`;
   }
 }
 
-const b = new SimpleBoss('TestBoss', 10);
-console.log(b.takeDamage(4));
-console.log(b.takeDamage(7));</textarea>
+class Pig extends Animal {
+  constructor(name, hp = 5) {
+    super(name, 'oink');   // chains to Animal constructor
+    this.hp = hp;
+    this.series = 'Peppa Pig';
+  }
+  status() {
+    return `${this.speak()} (HP: ${this.hp}, Series: ${this.series})`;
+  }
+}
+
+const peppa  = new Pig('Peppa', 5);
+const daddy  = new Pig('Daddy Pig', 12);
+console.log(peppa.status());
+console.log(daddy.status());</textarea>
       <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
     </div>
     <div class="output-container">
@@ -523,9 +642,10 @@ console.log(b.takeDamage(7));</textarea>
     </div>
   </div>
 
-  <h3>Method Overriding</h3>
+  <h2 id="method-overriding">🔄 Method Overriding</h2>
+  <h3>Overriding Parent Methods</h3>
   <p>
-    The engine calls <code>update()</code> on every game object 60 times per second. By overriding it in <code>PeppaBossEnemy</code>, I control exactly what the boss does each frame — whether it chases the player, whether it draws its hitbox, and whether it stops doing anything after being defeated. Without this override, the boss would use the default <code>Enemy</code> behavior, which doesn't know about health or defeat state. I also override <code>handleCollisionEvent()</code> to intentionally do nothing — collision damage is handled by the level, not the boss itself.
+    Overriding means writing a method in the child class with the same name as one in the parent. When that method is called, the child's version runs instead of the parent's. The game engine calls <code>update()</code> on every object 60 times per second. The parent's <code>update()</code> just draws the sprite. By overriding it, I add boss-specific behavior — chasing the player, stopping when defeated, and drawing the hitbox overlay.
   </p>
 
   <pre><code><span class="cm">// OVERRIDES Enemy.update() — custom chase + hitbox draw behavior</span>
@@ -548,12 +668,52 @@ console.log(b.takeDamage(7));</textarea>
   <span class="cm">// Collision managed by PeppaBattleLevelBase, not the enemy itself</span>
 }</code></pre>
   <div class="annotation">
-    Because <code>update()</code> runs every single frame, the override is what makes the boss feel alive. Each frame it re-draws the sprite, checks if it's dead (and stops moving if so), finds where the player is, and takes one step toward them. Remove this override and the boss freezes in place. The <code>handleCollisionEvent()</code> override is intentionally empty — if the engine's default collision fired, it could interfere with my own damage system in <code>PeppaBattleLevelBase</code>, so I block it here.
+    <code>update()</code> runs 60 times per second. The override adds boss-specific behavior each frame — draw sprite, stop if defeated, chase the player. Without it, the boss just stands still. <code>handleCollisionEvent()</code> is intentionally empty to prevent the engine's default collision from interfering with the custom damage system.
   </div>
 
-  <h3>Instantiation — GameLevel Configuration with Object Literals</h3>
+  <div class="code-runner-container" id="runner-overriding" data-storage-key="cs111-overriding">
+    <div class="challenge-box">
+      <h3>Try It — Method Overriding</h3>
+      <p>Run this to see how the child's <code>update()</code> replaces the parent's. Try setting <code>isDefeated = true</code> before calling update.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">class Enemy {
+  update() { return 'Default: just standing here'; }
+}
+
+class PeppaBossEnemy extends Enemy {
+  constructor(health) {
+    super();
+    this.health = health;
+    this.isDefeated = false;
+  }
+  update() {  // overrides Enemy.update()
+    if (this.isDefeated) return 'Stopped — already defeated';
+    return 'Chasing player — HP: ' + this.health;
+  }
+}
+
+const boss = new PeppaBossEnemy(3);
+console.log(boss.update());    // PeppaBossEnemy's version runs
+boss.isDefeated = true;
+console.log(boss.update());    // early exit branch</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
+  </div>
+
+  <h2 id="instantiation">🏗️ Instantiation &amp; Objects</h2>
+  <h3>Creating Objects from a Class</h3>
   <p>
-    The <code>this.classes</code> array is what tells the engine which objects to actually create and put into the game world when a level starts. The engine reads this array, creates a new instance of each class using the paired data object, and adds it to the game loop. If <code>PeppaBossEnemy</code> isn't in this array, there's no boss — the player would be fighting an empty room.
+    Instantiation means creating an actual object from a class blueprint using <code>new</code>. Until you write <code>new PeppaBossEnemy(data)</code>, the class is just a description — nothing exists in the game yet. The engine reads the <code>this.classes</code> array at the start of each level and calls <code>new</code> on every entry. If <code>PeppaBossEnemy</code> isn't in that array, there is no boss.
   </p>
 
   <pre><code><span class="cm">// Inside PeppaBattleLevelBase constructor — instantiates all game objects</span>
@@ -576,7 +736,42 @@ console.log(b.takeDamage(7));</textarea>
   hitbox:         { widthPercentage: <span class="num">0.45</span>, heightPercentage: <span class="num">0.6</span> }
 };</code></pre>
   <div class="annotation">
-    The <code>sprite_data_enemy</code> object directly controls what the boss looks like and where it starts. <code>INIT_POSITION</code> is where the boss spawns on screen when the level loads — I placed it at 72% across the canvas so it starts far from the player at 12%. <code>health</code> and <code>moveSpeed</code> are read by <code>PeppaBossEnemy</code>'s constructor, so changing these numbers in the config is all it takes to make Daddy Pig harder than George Pig without touching any other code.
+    The config object is passed to the constructor as <code>data</code>. The constructor reads <code>data.health</code>, <code>data.moveSpeed</code> etc. Changing these numbers is all it takes to make a different boss — no other code changes needed.
+  </div>
+
+  <div class="code-runner-container" id="runner-instantiation" data-storage-key="cs111-instantiation">
+    <div class="challenge-box">
+      <h3>Try It — Instantiation</h3>
+      <p>Run this to see how <code>new</code> creates separate objects from one class. Notice changing george's HP doesn't affect daddy's.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">class PeppaBossEnemy {
+  constructor(name, health) {
+    this.name = name;
+    this.health = health;
+  }
+}
+
+// new creates a completely separate object each time
+const george = new PeppaBossEnemy('George Pig', 3);
+const daddy  = new PeppaBossEnemy('Daddy Pig', 12);
+
+console.log(george.name + ': ' + george.health + ' HP');
+console.log(daddy.name  + ': ' + daddy.health  + ' HP');
+
+george.health = 0;  // only changes george
+console.log('After hit — george: ' + george.health + ', daddy: ' + daddy.health);</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
   </div>
 
   <h4>📚 Related Homework: Classes and Methods</h4>
@@ -584,130 +779,125 @@ console.log(b.takeDamage(7));</textarea>
 
   <hr>
 
-  <!-- SECTION 3: METHODS -->
-  <h2 id="methods">⚙️ Methods &amp; Parameters (5+ with return values)</h2>
+  <h2 id="methods">⚙️ Methods &amp; Parameters</h2>
+  <p>A method is a function inside a class. Parameters are its inputs. Below are five methods from the game — each takes specific inputs, does one job, and returns a value other code uses.</p>
 
-  <p>
-    The five methods in this project that clearly use return values are <code>moveTowardPlayer()</code>, <code>takeDamage()</code>, <code>toggleHitbox()</code>, <code>postScore()</code>, and <code>getLeaderboard()</code>. These return values are used to control movement, battle state, debug state, and API response handling.
-  </p>
-
-  <h3>1. moveTowardPlayer(target) — controls boss movement every frame</h3>
-  <pre><code><span class="cm">/**
- * Moves boss toward a target object each frame using normalized direction vector.
- * @param {Object} target - game object with .position, .width, .height
- * @returns {boolean} true if movement occurred, false if already at target
- */</span>
+  <h3>moveTowardPlayer(target) — moves the boss one step toward the player each frame</h3>
+  <pre><code><span class="cm">// param: target — the player object (has .position, .width, .height)</span>
+<span class="cm">// returns: true if the boss moved, false if it's already on top of the player</span>
 <span class="fn">moveTowardPlayer</span>(target) {
-  <span class="kw">const</span> myCenterX = <span class="kw">this</span>.position.x + <span class="kw">this</span>.width  / <span class="num">2</span>;
-  <span class="kw">const</span> myCenterY = <span class="kw">this</span>.position.y + <span class="kw">this</span>.height / <span class="num">2</span>;
-  <span class="kw">const</span> dx = (target.position.x + target.width  / <span class="num">2</span>) - myCenterX;
-  <span class="kw">const</span> dy = (target.position.y + target.height / <span class="num">2</span>) - myCenterY;
-  <span class="kw">const</span> distance = Math.<span class="fn">hypot</span>(dx, dy);   <span class="cm">// √(dx² + dy²)</span>
-
+  <span class="kw">const</span> dx = (target.position.x + target.width  / <span class="num">2</span>) - (<span class="kw">this</span>.position.x + <span class="kw">this</span>.width  / <span class="num">2</span>);
+  <span class="kw">const</span> dy = (target.position.y + target.height / <span class="num">2</span>) - (<span class="kw">this</span>.position.y + <span class="kw">this</span>.height / <span class="num">2</span>);
+  <span class="kw">const</span> distance = Math.<span class="fn">hypot</span>(dx, dy);
   <span class="kw">if</span> (distance > <span class="num">1</span>) {
-    <span class="kw">this</span>.position.x += (dx / distance) * <span class="kw">this</span>.moveSpeed;  <span class="cm">// normalize + scale</span>
+    <span class="kw">this</span>.position.x += (dx / distance) * <span class="kw">this</span>.moveSpeed;  <span class="cm">// divide by distance = normalize</span>
     <span class="kw">this</span>.position.y += (dy / distance) * <span class="kw">this</span>.moveSpeed;
     <span class="kw">return</span> <span class="bool">true</span>;
   }
   <span class="kw">return</span> <span class="bool">false</span>;
 }</code></pre>
   <div class="annotation">
-    This method is called every frame inside <code>update()</code> and is what makes the boss visibly chase the player across the screen. It calculates the straight-line direction from the boss to the player, then moves the boss exactly <code>moveSpeed</code> pixels in that direction. Because it normalizes the direction vector first, the boss always moves at the same speed — it doesn't slow down when far away or speed up when close. The returned boolean tells <code>update()</code> whether to bother calling <code>stayWithinCanvas()</code> — no point clamping position if the boss didn't move.
+    Dividing by <code>distance</code> before multiplying by <code>moveSpeed</code> keeps the boss at a constant speed regardless of how far away the player is. The return value tells <code>update()</code> whether to call <code>stayWithinCanvas()</code> — no point doing that if the boss didn't move.
   </div>
 
-  <h3>2. takeDamage(amount) — controls whether a laser hit actually hurts the boss</h3>
-  <pre><code><span class="cm">/**
- * Applies damage to boss. Respects invulnerability window and defeat state.
- * @param {number} amount - HP to subtract (default 1)
- * @returns {boolean} true if this hit caused defeat
- */</span>
+  <h3>takeDamage(amount) — called when a laser hits the boss</h3>
+  <pre><code><span class="cm">// param: amount — how much HP to subtract (default 1)</span>
+<span class="cm">// returns: true if this hit caused the boss to be defeated</span>
 <span class="fn">takeDamage</span>(amount = <span class="num">1</span>) {
-  <span class="kw">if</span> (<span class="kw">this</span>.isDefeated) {                          <span class="cm">// nested condition 1</span>
-    console.<span class="fn">log</span>(<span class="str">`[Boss] Already defeated.`</span>);
-    <span class="kw">return</span> <span class="bool">true</span>;
-  }
-  <span class="kw">if</span> (!<span class="kw">this</span>.isVulnerable) {                       <span class="cm">// nested condition 2</span>
-    console.<span class="fn">log</span>(<span class="str">`[Boss] Invulnerable, ignoring.`</span>);
-    <span class="kw">return</span> <span class="bool">false</span>;
-  }
-  <span class="kw">this</span>.health        = Math.<span class="fn">max</span>(<span class="num">0</span>, <span class="kw">this</span>.health - amount);
-  <span class="kw">this</span>.isVulnerable  = <span class="bool">false</span>;
-  <span class="kw">this</span>.lastDamagedAt = Date.<span class="fn">now</span>();
+  <span class="kw">if</span> (<span class="kw">this</span>.isDefeated)    { console.<span class="fn">log</span>(<span class="str">'[Boss] Already defeated.'</span>);    <span class="kw">return</span> <span class="bool">true</span>;  }
+  <span class="kw">if</span> (!<span class="kw">this</span>.isVulnerable) { console.<span class="fn">log</span>(<span class="str">'[Boss] Invulnerable, ignoring.'</span>); <span class="kw">return</span> <span class="bool">false</span>; }
+  <span class="kw">this</span>.health       = Math.<span class="fn">max</span>(<span class="num">0</span>, <span class="kw">this</span>.health - amount);
+  <span class="kw">this</span>.isVulnerable = <span class="bool">false</span>;   <span class="cm">// start 300ms cooldown window</span>
   console.<span class="fn">log</span>(<span class="str">`[Boss] Hit! HP: ${<span class="kw">this</span>.health}/${<span class="kw">this</span>.maxHealth}`</span>);
-
-  <span class="kw">if</span> (<span class="kw">this</span>.health === <span class="num">0</span>) {                        <span class="cm">// nested condition 3</span>
-    <span class="kw">this</span>.isDefeated = <span class="bool">true</span>;
-    <span class="kw">this</span>.canvas.style.filter  = <span class="str">'grayscale(1) brightness(0.8)'</span>;
-    <span class="kw">this</span>.canvas.style.opacity = <span class="str">'0.6'</span>;
-    console.<span class="fn">log</span>(<span class="str">`[Boss] Defeated!`</span>);
-  }
+  <span class="kw">if</span> (<span class="kw">this</span>.health === <span class="num">0</span>) <span class="kw">this</span>.isDefeated = <span class="bool">true</span>;
   <span class="kw">return</span> <span class="kw">this</span>.isDefeated;
 }</code></pre>
   <div class="annotation">
-    This method is what the laser system calls when a laser hits the boss hitbox. The three nested conditions are what make the fight feel fair and intentional. The first condition stops a defeated boss from taking damage a second time after it's already fading out. The second condition enforces the 300ms invulnerability window — without it, a single laser traveling through the boss would call <code>takeDamage</code> on every frame it overlapped, killing Daddy Pig's 12 HP in under a second. The third condition is what actually ends the level — when <code>isDefeated</code> becomes <code>true</code>, the boss visually grays out and <code>update()</code> in the level sees that flag and triggers the win screen or level transition.
+    Without the invulnerability check, a single laser crossing the boss hitbox would call <code>takeDamage</code> on every frame it overlapped — that's up to 10 hits per laser. The 300ms window means each laser can only land one hit.
   </div>
 
-  <h3>3. spawnLaser(fromX, fromY, targetX, targetY, isPlayerLaser) — creates a new projectile</h3>
-  <pre><code><span class="cm">/**
- * Spawns a laser aimed from one point toward a target point.
- * @param {number}  fromX         - origin X coordinate
- * @param {number}  fromY         - origin Y coordinate
- * @param {number}  targetX       - aim target X coordinate
- * @param {number}  targetY       - aim target Y coordinate
- * @param {boolean} isPlayerLaser - true = player fired it, false = enemy fired it
- */</span>
+  <h3>spawnLaser(fromX, fromY, targetX, targetY, isPlayerLaser) — adds a new laser to the array</h3>
+  <pre><code><span class="cm">// isPlayerLaser: true = player fired it (damages boss), false = boss fired it (damages player)</span>
 <span class="fn">spawnLaser</span>(fromX, fromY, targetX, targetY, isPlayerLaser) {
-  <span class="kw">const</span> dx  = targetX - fromX;
-  <span class="kw">const</span> dy  = targetY - fromY;
-  <span class="kw">const</span> len = Math.<span class="fn">hypot</span>(dx, dy) || <span class="num">1</span>;     <span class="cm">// || prevents divide-by-zero</span>
-
-  <span class="kw">this</span>.lasers.<span class="fn">push</span>({                          <span class="cm">// push object into Array</span>
+  <span class="kw">const</span> dx = targetX - fromX,  dy = targetY - fromY;
+  <span class="kw">const</span> len = Math.<span class="fn">hypot</span>(dx, dy) || <span class="num">1</span>;
+  <span class="kw">this</span>.lasers.<span class="fn">push</span>({
     x: fromX, y: fromY,
-    vx: (dx / len) * <span class="kw">this</span>.laserSpeed,         <span class="cm">// Number — velocity x</span>
-    vy: (dy / len) * <span class="kw">this</span>.laserSpeed,         <span class="cm">// Number — velocity y</span>
-    isPlayerLaser,                              <span class="cm">// Boolean — ownership flag</span>
-    life: <span class="num">60</span>, maxLife: <span class="num">60</span>                     <span class="cm">// Number — lifespan in frames</span>
+    vx: (dx / len) * <span class="kw">this</span>.laserSpeed,   <span class="cm">// velocity — added to x each frame</span>
+    vy: (dy / len) * <span class="kw">this</span>.laserSpeed,   <span class="cm">// velocity — added to y each frame</span>
+    isPlayerLaser, life: <span class="num">60</span>
   });
 }</code></pre>
-
   <div class="annotation">
-    Every time the player hits SPACE or the boss fires on its interval, this method is called and adds a new object to the <code>this.lasers</code> array. That array is then looped through every frame by <code>updateLasers()</code> — each laser moves across the screen because its <code>vx</code> and <code>vy</code> values get added to its position each frame. The <code>isPlayerLaser</code> boolean is critical: the collision check reads this flag to know whether to damage the boss (player laser) or the player (enemy laser). A laser without this flag would hit everything including its own shooter.
+    <code>isPlayerLaser</code> is what tells the collision system which side takes damage. Without it, every laser would hit both the player and the boss.
   </div>
 
-  <h3>4. drawHitbox() — visually shows the boss collision boundary for debugging</h3>
-  <pre><code><span class="cm">/**
- * Draws a red rectangle over the boss sprite for collision debugging.
- * Only active when this.showHitbox === true.
- */</span>
-<span class="fn">drawHitbox</span>() {
+  <h3>drawHitbox() — draws a red rectangle showing the collision boundary</h3>
+  <pre><code><span class="fn">drawHitbox</span>() {
   <span class="kw">const</span> ctx = <span class="kw">this</span>.gameEnv?.ctx;
   <span class="kw">if</span> (!ctx) <span class="kw">return</span>;
   ctx.<span class="fn">save</span>();
-  ctx.strokeStyle = <span class="str">'rgba(255, 0, 0, 0.85)'</span>;  <span class="cm">// String — CSS color</span>
-  ctx.lineWidth   = <span class="num">2</span>;                          <span class="cm">// Number</span>
+  ctx.strokeStyle = <span class="str">'rgba(255, 0, 0, 0.85)'</span>;
   ctx.<span class="fn">strokeRect</span>(<span class="kw">this</span>.position.x, <span class="kw">this</span>.position.y, <span class="kw">this</span>.width, <span class="kw">this</span>.height);
-  ctx.fillStyle   = <span class="str">'rgba(255,0,0,0.08)'</span>;
-  ctx.<span class="fn">fillRect</span>  (<span class="kw">this</span>.position.x, <span class="kw">this</span>.position.y, <span class="kw">this</span>.width, <span class="kw">this</span>.height);
   ctx.<span class="fn">restore</span>();
-  console.<span class="fn">log</span>(<span class="str">`[Hitbox] pos=(${Math.round(<span class="kw">this</span>.position.x)},${Math.round(<span class="kw">this</span>.position.y)}) size=${<span class="kw">this</span>.width}x${<span class="kw">this</span>.height}`</span>);
+  console.<span class="fn">log</span>(<span class="str">`[Hitbox] pos=(${Math.round(<span class="kw">this</span>.position.x)},${Math.round(<span class="kw">this</span>.position.y)})`</span>);
 }</code></pre>
-
   <div class="annotation">
-    During testing I noticed lasers were registering hits when they visually looked like they missed the boss. I added this method to overlay the actual collision rectangle on top of the sprite so I could see the mismatch — the hitbox was too large relative to the pig's body in the image. I adjusted <code>widthPercentage: 0.45</code> and <code>heightPercentage: 0.6</code> in the sprite config until the red rectangle matched the visible body, making combat feel accurate to what the player sees.
+    Used during testing to make the collision box visible. I found the box was too large — lasers registered hits that visually missed. Tuning <code>widthPercentage: 0.45</code> fixed it.
   </div>
 
-  <h3>5. toggleHitbox() — turns hitbox display on or off during a live game session</h3>
-  <pre><code><span class="cm">/**
- * Toggles hitbox debug display on/off.
- * @returns {boolean} the new state of showHitbox
- */</span>
-<span class="fn">toggleHitbox</span>() {
-  <span class="kw">this</span>.showHitbox = !<span class="kw">this</span>.showHitbox;                         <span class="cm">// Boolean NOT operator</span>
-  console.<span class="fn">log</span>(<span class="str">`[Hitbox] now ${<span class="kw">this</span>.showHitbox ? <span class="str">'ON'</span> : <span class="str">'OFF'</span>}`</span>);  <span class="cm">// String template literal</span>
-  <span class="kw">return</span> <span class="kw">this</span>.showHitbox;
+  <h3>toggleHitbox() — flips the debug overlay on or off</h3>
+  <pre><code><span class="fn">toggleHitbox</span>() {
+  <span class="kw">this</span>.showHitbox = !<span class="kw">this</span>.showHitbox;  <span class="cm">// ! flips true→false or false→true</span>
+  console.<span class="fn">log</span>(<span class="str">`[Hitbox] now ${<span class="kw">this</span>.showHitbox ? <span class="str">'ON'</span> : <span class="str">'OFF'</span>}`</span>);
+  <span class="kw">return</span> <span class="kw">this</span>.showHitbox;  <span class="cm">// caller can read the new state</span>
 }</code></pre>
   <div class="annotation">
-    The <code>!</code> operator flips <code>showHitbox</code> between <code>true</code> and <code>false</code> each time this is called. Inside <code>update()</code>, that boolean is checked every frame — when it's <code>true</code>, <code>drawHitbox()</code> fires and the red overlay appears on screen. When it's <code>false</code>, nothing extra is drawn. This lets me toggle the debug view in a live running game without restarting, which was essential for tuning hitbox sizes during playtesting.
+    <code>update()</code> checks <code>showHitbox</code> every frame. When <code>true</code>, the overlay draws. Toggling without restarting the game was essential for tuning hitbox sizes during playtesting.
+  </div>
+
+  <div class="code-runner-container" id="runner-methods" data-storage-key="cs111-methods">
+    <div class="challenge-box">
+      <h3>Try It — Methods &amp; Parameters</h3>
+      <p>Run this to see <code>takeDamage(amount)</code> in action. Try passing different amounts or setting <code>isVulnerable = false</code> to see the blocked path.</p>
+    </div>
+    <div class="editor-container">
+      <div class="control-panel">
+        <button class="runBtn">▶</button><button class="copyBtn">⎘</button><button class="saveBtn">💾</button><button class="clearStorageBtn">🗑</button>
+        <select class="languageSelect"><option value="javascript">JavaScript</option><option value="python">Python</option><option value="java">Java</option></select>
+        <select class="fontSizeSelect"><option value="14">14px</option><option value="16">16px</option><option value="18">18px</option></select>
+      </div>
+      <textarea class="editor-textarea">class Boss {
+  constructor(name, health) {
+    this.name = name;
+    this.health = health;
+    this.maxHealth = health;
+    this.isDefeated = false;
+    this.isVulnerable = true;
+  }
+  takeDamage(amount = 1) {
+    if (this.isDefeated)    { console.log('Already defeated');        return true;  }
+    if (!this.isVulnerable) { console.log('Invulnerable — blocked');  return false; }
+    this.health = Math.max(0, this.health - amount);
+    if (this.health === 0) this.isDefeated = true;
+    console.log(this.name + ' HP: ' + this.health + '/' + this.maxHealth);
+    return this.isDefeated;
+  }
+}
+
+const boss = new Boss('Daddy Pig', 5);
+boss.takeDamage(2);
+boss.isVulnerable = false;
+boss.takeDamage(1);           // blocked
+boss.isVulnerable = true;
+const done = boss.takeDamage(10);  // overkill → clamps to 0
+console.log('Defeated:', done);</textarea>
+      <div class="control-panel"><span class="lineCount">Lines: 1</span><span class="charCount">Characters: 0</span></div>
+    </div>
+    <div class="output-container">
+      <div class="control-panel"><span>Output</span><button class="copyOutputBtn">⎘</button><span class="execTime"></span></div>
+      <div class="output-content">Click "Run" in code control panel to see output ...</div>
+    </div>
   </div>
 
   <h4>📚 Related Homework: Classes and Methods</h4>
